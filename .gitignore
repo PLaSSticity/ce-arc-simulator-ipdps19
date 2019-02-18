@@ -1,4 +1,5 @@
 *.pyc
+*.class
 
 */GPATH
 */GRTAGS
@@ -7,7 +8,3 @@
 */.tags
 */.tags1
 */*.bak
-
-./arc-simulator/bin
-
-./ce-simulator/bin
