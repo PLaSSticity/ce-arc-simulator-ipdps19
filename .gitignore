@@ -1,0 +1,13 @@
+*.pyc
+
+*/GPATH
+*/GRTAGS
+*/GTAGS
+*/TAGS
+*/.tags
+*/.tags1
+*/*.bak
+
+./arc-simulator/bin
+
+./ce-simulator/bin

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# GCCVERSION=$(gcc -v 2>&1 | tail -1 | awk '{print $3}')
+# if $( echo $GCCVERSION | grep --quiet '4.8.' ); then
+#     echo "Is GCC version is 4.8.x? ... yes."
+# else
+#     echo "PARSEC 3.0 works best with GCC 4.8.x."
+#     exit -1
+# fi
+python3 $VISER_EXP/src/main.py --sameMachine=True $*
