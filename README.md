@@ -24,11 +24,23 @@ It should be possible to execute the simulators with both Java versions 1.7 and 
 
 We assume the path to the CE simulator is denoted by `$MESISIM_ROOT` and the path to the ARC simulator is denoted by `$VISERSIM_ROOT`.
 
+The following are a few simulator configurations that were used for the experiments reported in the IPDPS'19 paper:
+
++ mesi8 (WMM with 8 cores)
++ ce16 (CE with 16 cores)
++ ce32-64Kaim (CE with 32 cores using a 64K-entry AIM cache)
++ viser8-unopt (Unoptimized basic design of ARC with 8 cores)
++ viser8-selfinvalidationopt (Intermediate ARC design with 8 cores that only includes optimizations to reduce self-invalidations at region boundaries)
++ viser8-32Kaim (Fully optimized ARC design with 8 cores and 32K-entry AIM)
++ viser8-16Kaim (Fully optimized ARC design with 8 cores and 16K-entry AIM)
++ viser32-64Kaim (Fully optimized ARC design with 32 cores and 64K-entry AIM)
++ viser32-idealaim (Fully optimized ARC design with 32 cores and an ideal AIM)
+
 ## PARSEC
 
-The simulators execute benchmarks from the PARSEC suite version 3.0-beta-20150206. The PARSEC suite can be downloaded from http://parsec.cs.princeton.edu/. We assume that the path to the PARSEC suite is denoted by `$PARSEC_ROOT`.
+The simulators execute benchmarks from the PARSEC suite version 3.0-beta-20150206. The PARSEC suite can be downloaded from http://parsec.cs.princeton.edu/.
 
-For our experiments, we have created a new build configuration `gcc-pthreads-hooks` for the relevant PARSEC applications to ensure Pthreads as the parallelization model.
+For our experiments, we have created a new build configuration `gcc-pthreads-hooks` for the relevant PARSEC applications to ensure Pthreads as the parallelization model. Otherwise, applications like `swaptions` use TBB as the default threading model (see `gcc-hooks.bldconf` for `swaptions`).
 
 The following shows the contents of `gcc-pthreads-hooks.bldconf` file for the `blackscholes` application in PARSEC.
 
@@ -51,10 +63,17 @@ build_conf=""
 build_deps="hooks"
 ```
 
-You can avoid the overhead of creating new `.bldconf` files for each application in PARSEC and use the build configurations that are part of PARSEC (for e.g., `gcc.bldconf`), as long as you make sure that the application uses Pthreads as the parallelization model. In that case, you will need to instead make the following changes:
+The build configuration files we have used are available in `$PROJECT_ROOT/parsec`. You can avoid the overhead of creating new `.bldconf` files for each application in PARSEC and use the build configurations that are part of PARSEC (for e.g., `gcc.bldconf`), as long as you make sure that the application uses Pthreads as the parallelization model. In that case, you will need to instead make the following changes:
 
++ Make sure Pthreads is the default parallelization model in `gcc-hooks.bldconf` for relevant PARSEC applications
 + Update the build configuration in `$PROJECT_ROOT/intel-pintool/Viser/makefile.rules`
 + Update the build configuration in `PARSEC_ARGS1` in `$PROJECT_ROOT/sim-framework/src/options/constants.py`
+
+We have also included a couple of helper scripts to fix two issues we faced:
+1. `$PROJECT_ROOT/parsec/x264.patch` - Fix a double free error in `x264`
+2. `$PROJECT_ROOT/parsec/resolve_pod_issues.h` - Resolve issues with Perl versions (building `ssl` library will possibly require Perl version <= 5.14)
+
+We assume that the path to the PARSEC suite is denoted by `$PARSEC_ROOT`.
 
 ## Intel Pintool
 
@@ -62,9 +81,9 @@ The implementation uses Intel Pin version 2.14 to generate a serialized event tr
 
 Intel Pin can be downloaded from https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool. We assume that the path to the extracted source is denoted by `$PIN_ROOT`. After extracting Intel Pin, copy `$PROJECT_ROOT/intel-pintool/Viser` to `$PIN_ROOT/source/tools/`.
 
-## Simulator Framework
+## Helper Framework
 
-This is a helper project written in Python to automate different steps with evaluation (e.g., executing PARSEC applications with the Pintool and one or more configurations of the CE/ARC simulators, and plot graphs comparing performance). We assume that the path to the source is denoted by `$VISER_EXP`.
+This is a helper project written in Python 3 to automate different steps with evaluation (e.g., executing PARSEC applications with the Pintool and one or more configurations of the CE/ARC simulators, and plot graphs comparing performance). We assume that the path to the source is denoted by `$VISER_EXP`.
 
 The framework depends on a few Python packages, and a few third applications like `jgraph` (https://web.eecs.utk.edu/~plank/plank/jgraph/jgraph.html) and `McPAT` (https://github.com/HewlettPackard/mcpat).
 
@@ -78,6 +97,8 @@ export PARSEC_ROOT=<path to PARSEC on your setup>
 export MESISIM_ROOT=$PROJECT_ROOT/ce-simulator
 export VISERSIM_ROOT=$PROJECT_ROOT/arc-simulator
 export VISER_EXP=$PROJECT_ROOT/sim-framework
+export EXP_OUTPUT=<path to directory where experimental output files will be generated>
+export EXP_PRODUCTS=<path to directory where statistics and plots will be generated>
 ```
 
 ## Examples
@@ -85,4 +106,15 @@ export VISER_EXP=$PROJECT_ROOT/sim-framework
 Here are some examples to run the simulators with PARSEC benchmarks.
 
 ```Bash
+viser-local --tools=pintool,mesi8,ce8,ce8-32Kaim,viser8-unopt,viser8-selfinvalidationopt,viser8-32Kaim,viser8-16Kaim,viser8-idealaim --tasks=sync,build,run --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=8 --core=8 --outputDir=8core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
 ```
+
+The time taken and memory required to execute these experiments depend on the number of simultaneous configurations that are run, along with the input size of the PARSEC applications.
+
+```Bash
+viser-local --tools=pintool,mesi32,ce32,ce32-64Kaim,viser32-32Kaim,viser32-64Kaim,viser32-idealaim --tasks=result --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=32 --core=32 --outputDir=32core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
+```
+
+## Questions
+
+Feel free to post issues or contact with any questions.
