@@ -6,9 +6,21 @@ This repository includes the CE, CE+, and ARC simulators as reported in the IPDP
 
 In the following, we give a brief description of the implementation, and list instructions to build and execute the projects.
 
-These instructions have been tested on a Ubuntu 14.04.5 LTS platform. It should also be possible to set the simulators up on newer LTS releases, by taking care of the C++ and Java compiler versions.
+These instructions have been tested on a Ubuntu 14.04.5 LTS platform. It should also be possible to set the simulators up on newer Ubuntu LTS releases (e.g., 16.04), by taking care of the C++ and Java compiler versions and compatibility with the packages like Intel Pin.
 
 We assume the root of the repository (top-level directory) is given by `$PROJECT_ROOT`.
+
+## Setup the Environment
+
+Create two directories `exp-output` and `exp-products` under $HOME. It is possible to use a different path but you will need to change the environment variables in the implementations.
+
+    cd; mkdir exp-output exp-products
+
++ Requirements
+
+    You will need to install the following packages on a Ubuntu 14.04.5 distribution to get the following simulators working.
+
+        sudo apt install git ant openjdk-7-jdk make gcc g++ libboost-dev
 
 ## CE and ARC
 
@@ -79,7 +91,13 @@ We assume that the path to the PARSEC suite is denoted by `$PARSEC_ROOT`.
 
 The implementation uses Intel Pin version 2.14 to generate a serialized event trace of relevant application events (for e.g., shared-memory read and write). The Intel Pintool is implemented in C++ and depends on the Boost library version > 1.58. The Pintool source is available at `$PROJECT_ROOT/intel-pintool`.
 
-Intel Pin can be downloaded from https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool. We assume that the path to the extracted source is denoted by `$PIN_ROOT`. After extracting Intel Pin, copy `$PROJECT_ROOT/intel-pintool/Viser` to `$PIN_ROOT/source/tools/`.
+You can find more information about Intel Pin from https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool. Intel Pin v2.14 for GNU/Linux can be downloaded from https://software.intel.com/sites/landingpage/pintool/downloads/pin-2.14-71313-gcc.4.4.7-linux.tar.gz. After downloading and extracting Pin, you need to copy `$PROJECT_ROOT/intel-pintool/Viser` to `$PIN_ROOT/source/tools/`. You can use the following instructions to build the Pintool:
+
+    cd; tar xvzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz; mv pin-2.14-71313-gcc.4.4.7-linux intel-pin; cd intel-pin/source/tools
+    cp -r $PROJECT_ROOT/intel-pintool/Viser .
+    cd ..; make
+
+We assume that the path to the extracted source is denoted by `$PIN_ROOT`.
 
 ## Helper Framework
 
@@ -99,6 +117,8 @@ export VISERSIM_ROOT=$PROJECT_ROOT/arc-simulator
 export VISER_EXP=$PROJECT_ROOT/sim-framework
 export EXP_OUTPUT=<path to directory where experimental output files will be generated>
 export EXP_PRODUCTS=<path to directory where statistics and plots will be generated>
+export MCPAT_ROOT=<path to McPAT directory>
+PATH=$VISER_EXP:$PATH
 ```
 
 ## Examples
@@ -106,13 +126,13 @@ export EXP_PRODUCTS=<path to directory where statistics and plots will be genera
 Here are some examples to run the simulators with PARSEC benchmarks.
 
 ```Bash
-viser-local --tools=pintool,mesi8,ce8,ce8-32Kaim,viser8-unopt,viser8-selfinvalidationopt,viser8-32Kaim,viser8-16Kaim,viser8-idealaim --tasks=sync,build,run --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=8 --core=8 --outputDir=8core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
+arc --tools=pintool,mesi8,ce8,ce8-32Kaim,viser8-unopt,viser8-selfinvalidationopt,viser8-32Kaim,viser8-16Kaim,viser8-idealaim --tasks=sync,build,run --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=8 --core=8 --outputDir=8core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
 ```
 
 The time taken and memory required to execute these experiments depend on the number of simultaneous configurations that are run, along with the input size of the PARSEC applications.
 
 ```Bash
-viser-local --tools=pintool,mesi32,ce32,ce32-64Kaim,viser32-32Kaim,viser32-64Kaim,viser32-idealaim --tasks=result --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=32 --core=32 --outputDir=32core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
+arc --tools=pintool,mesi32,ce32,ce32-64Kaim,viser32-32Kaim,viser32-64Kaim,viser32-idealaim --tasks=result --workload=simmedium --bench=blackscholes,bodytrack,canneal,dedup,ferret,fluidanimate,raytrace,streamcluster,swaptions,vips,x264 --pinThreads=32 --core=32 --outputDir=32core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
 ```
 
 ## Questions
