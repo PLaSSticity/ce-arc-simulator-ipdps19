@@ -1,14 +1,10 @@
 # Rethinking Support for Region Conflict Exceptions
 
-This repository includes the CE, CE+, and ARC simulators as reported in the IPDPS'19 paper. Please refer to the following paper for more details.
+This repository includes the CE, CE+, and ARC simulators as reported in the following IPDPS'19 paper.
 
     Swarnendu Biswas, Rui Zhang, Michael D. Bond, and Brandon Lucia. Rethinking Support for Region Conflict Exceptions. IPDPS 2019.
 
-In the following, we give a brief description of the implementation, and list instructions to build and execute the projects.
-
-These instructions have been tested on a Ubuntu 14.04.5 LTS platform. It should also be possible to set the simulators up on newer Ubuntu LTS releases (e.g., 16.04), by taking care of the C++ and Java compiler versions and compatibility with the packages like Intel Pin.
-
-We assume the root of the repository (top-level directory) is given by `$PROJECT_ROOT`.
+Please refer to the following paper for more details. In the following, we give a brief description of the implementation, and list instructions to build and execute the implementation. These instructions have been tested on Ubuntu 14.04 and 16.04 LTS platforms.  We assume the root of the repository (top-level directory) is given by `$PROJECT_ROOT`.
 
 ## Setup the Environment
 
@@ -18,11 +14,20 @@ Create two directories `exp-output` and `exp-products` under $HOME. It is possib
 cd; mkdir exp-output exp-products
 ```
 
-You will need to install the following packages on a Ubuntu 14.04.5 LTS distribution to get the following simulators working.
+You will need to install the following packages on a Ubuntu distribution to get the following simulators working.
+
+### Ubuntu 14.04.5 LTS
 
 ```Bash
-sudo apt install git ant openjdk-7-jdk make gcc g++ libboost-dev libc6-i386 libc6 libgcc1 libstdc++6 build-essential ImageMagick lib32ncurses5 lib32stdc++6 libssl-dev m4 pkg-config libglib2.0-dev libxext-dev libxmu-dev libxml2-dev gcc-multilib g++-multilib python3.5 python3.5-dev python3-pip libblas-dev liblapack-dev libblas-dev liblapack-dev libblas3gf libgfortran3 liblapack3gf gfortran jgraph
+sudo apt install git ant openjdk-7-jdk make gcc g++ libboost-dev libc6-i386 libc6 libgcc1 libstdc++6 build-essential ImageMagick lib32ncurses5 lib32stdc++6 libssl-dev m4 pkg-config libglib2.0-dev libxext-dev libxmu-dev libxml2-dev gcc-multilib g++-multilib python3.5 python3.5-dev python3-pip libblas-dev liblapack-dev libblas-dev liblapack-dev libblas3gf libgfortran3 liblapack3gf gfortran jgraph binutils
 ```
+
+### Ubuntu 16.04.5 LTS
+
+```Bash
+sudo apt install git make libboost-dev libc6-i386 libc6 libgcc1 libstdc++6 build-essential lib32ncurses5 lib32stdc++6 libssl-dev m4 pkg-config libglib2.0-dev libxext-dev libxmu-dev libxml2-dev gcc-multilib g++-multilib python3.5 python3.5-dev python3-pip libblas-dev liblapack-dev libblas-dev liblapack-dev libgfortran3 gfortran binutils openjdk-8-jdk ant jgraph imagemagick gcc-4.8 g++-4.8 gcc-4.8-multilib g++-4.8-multilib
+```
+For Ubuntu 16.04, one needs to install and make GCC 4.8 the default to ensure compatibility with Intel Pin v2.14.
 
 ## CE and ARC
 
@@ -96,9 +101,13 @@ The implementation uses Intel Pin version 2.14 to generate a serialized event tr
 You can find more information about Intel Pin from https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool. Intel Pin v2.14 for GNU/Linux can be downloaded from https://software.intel.com/sites/landingpage/pintool/downloads/pin-2.14-71313-gcc.4.4.7-linux.tar.gz. After downloading and extracting Pin, you need to copy `$PROJECT_ROOT/intel-pintool/Viser` to `$PIN_ROOT/source/tools/`. You can use the following instructions to build the Pintool:
 
 ```Bash
-cd; tar xvzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz; mv pin-2.14-71313-gcc.4.4.7-linux intel-pin; cd intel-pin/source/tools
-cp -r $PROJECT_ROOT/intel-pintool/Viser .
-cd ..; make
+cd; wget https://software.intel.com/sites/landingpage/pintool/downloads/pin-2.14-71313-gcc.4.4.7-linux.tar.gz
+
+tar xvzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz
+
+mv pin-2.14-71313-gcc.4.4.7-linux intel-pin
+
+cd intel-pin/source/tools; cp -r $PROJECT_ROOT/intel-pintool/Viser .; cd Viser; make
 ```
 
 We assume that the path to the extracted source is denoted by `$PIN_ROOT`.
@@ -110,7 +119,7 @@ This is a helper project written in Python >= 3.5 to automate different steps wi
 The framework depends on a few Python packages, and a few third applications like `jgraph` (https://web.eecs.utk.edu/~plank/plank/jgraph/jgraph.html) and `McPAT` (https://github.com/HewlettPackard/mcpat).
 
 ```Bash
-sudo python3.5 -m pip install --upgrade numpy scipy django
+sudo -H python3.5 -m pip install --upgrade pip numpy scipy django
 
 cd; git clone https://github.com/HewlettPackard/mcpat.git; cd mcpat; make;
 ```
