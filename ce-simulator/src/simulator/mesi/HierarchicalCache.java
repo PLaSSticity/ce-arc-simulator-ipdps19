@@ -202,13 +202,6 @@ public class HierarchicalCache<Line extends MESILine> {
 		indexBits = (short) BitTwiddle.floorLog2(numSets);
 		lineOffsetBits = (short) BitTwiddle.floorLog2(thisConfig.lineSize);
 
-		if (this.processor.id.get() == 0) {
-			System.out.println("Number of sets: " + numSets + " Associativity: " + thisConfig.assoc
-					+ " Cache size: " + thisConfig.cacheSize);
-			System.out.println("Index bits: " + indexBits);
-			System.out.println("Line offset bits: " + lineOffsetBits);
-		}
-
 		sets = new ArrayList<LinkedList<Line>>(numSets);
 		MRUBits = new short[numSets];
 

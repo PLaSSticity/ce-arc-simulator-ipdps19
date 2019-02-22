@@ -14,13 +14,15 @@ We assume the root of the repository (top-level directory) is given by `$PROJECT
 
 Create two directories `exp-output` and `exp-products` under $HOME. It is possible to use a different path but you will need to change the environment variables in the implementations.
 
-    cd; mkdir exp-output exp-products
+```Bash
+cd; mkdir exp-output exp-products
+```
 
-+ Requirements
+You will need to install the following packages on a Ubuntu 14.04.5 LTS distribution to get the following simulators working.
 
-    You will need to install the following packages on a Ubuntu 14.04.5 distribution to get the following simulators working.
-
-        sudo apt install git ant openjdk-7-jdk make gcc g++ libboost-dev
+```Bash
+sudo apt install git ant openjdk-7-jdk make gcc g++ libboost-dev libc6-i386 libc6 libgcc1 libstdc++6 build-essential ImageMagick lib32ncurses5 lib32stdc++6 libssl-dev m4 pkg-config libglib2.0-dev libxext-dev libxmu-dev libxml2-dev gcc-multilib g++-multilib python3.5 python3.5-dev python3-pip libblas-dev liblapack-dev libblas-dev liblapack-dev libblas3gf libgfortran3 liblapack3gf gfortran jgraph
+```
 
 ## CE and ARC
 
@@ -93,17 +95,25 @@ The implementation uses Intel Pin version 2.14 to generate a serialized event tr
 
 You can find more information about Intel Pin from https://software.intel.com/en-us/articles/pin-a-dynamic-binary-instrumentation-tool. Intel Pin v2.14 for GNU/Linux can be downloaded from https://software.intel.com/sites/landingpage/pintool/downloads/pin-2.14-71313-gcc.4.4.7-linux.tar.gz. After downloading and extracting Pin, you need to copy `$PROJECT_ROOT/intel-pintool/Viser` to `$PIN_ROOT/source/tools/`. You can use the following instructions to build the Pintool:
 
-    cd; tar xvzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz; mv pin-2.14-71313-gcc.4.4.7-linux intel-pin; cd intel-pin/source/tools
-    cp -r $PROJECT_ROOT/intel-pintool/Viser .
-    cd ..; make
+```Bash
+cd; tar xvzf pin-2.14-71313-gcc.4.4.7-linux.tar.gz; mv pin-2.14-71313-gcc.4.4.7-linux intel-pin; cd intel-pin/source/tools
+cp -r $PROJECT_ROOT/intel-pintool/Viser .
+cd ..; make
+```
 
 We assume that the path to the extracted source is denoted by `$PIN_ROOT`.
 
 ## Helper Framework
 
-This is a helper project written in Python 3 to automate different steps with evaluation (e.g., executing PARSEC applications with the Pintool and one or more configurations of the CE/ARC simulators, and plot graphs comparing performance). We assume that the path to the source is denoted by `$VISER_EXP`.
+This is a helper project written in Python >= 3.5 to automate different steps with evaluation (e.g., executing PARSEC applications with the Pintool and one or more configurations of the CE/ARC simulators, and plot graphs comparing performance). We assume that the path to the source is denoted by `$VISER_EXP`.
 
 The framework depends on a few Python packages, and a few third applications like `jgraph` (https://web.eecs.utk.edu/~plank/plank/jgraph/jgraph.html) and `McPAT` (https://github.com/HewlettPackard/mcpat).
+
+```Bash
+sudo python3.5 -m pip install --upgrade numpy scipy django
+
+cd; git clone https://github.com/HewlettPackard/mcpat.git; cd mcpat; make;
+```
 
 In addition, the framework assumes that the following environment variables are defined (for e.g., in `$HOME/.bashrc`).
 
@@ -115,13 +125,19 @@ export PARSEC_ROOT=<path to PARSEC on your setup>
 export MESISIM_ROOT=$PROJECT_ROOT/ce-simulator
 export VISERSIM_ROOT=$PROJECT_ROOT/arc-simulator
 export VISER_EXP=$PROJECT_ROOT/sim-framework
-export EXP_OUTPUT=<path to directory where experimental output files will be generated>
-export EXP_PRODUCTS=<path to directory where statistics and plots will be generated>
-export MCPAT_ROOT=<path to McPAT directory>
+export MCPAT_ROOT=$HOME/mcpat
 PATH=$VISER_EXP:$PATH
 ```
 
 ## Examples
+
+Here are some short-running experiments  with PARSEC benchmarks to test whether your setup is working.
+
+```Bash
+arc --tools=pintool,mesi8 --tasks=build,run,result --workload=test --bench=blackscholes,x264 --pinThreads=8 --core=8 --outputDir=8core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
+```
+
+The experiment output is
 
 Here are some examples to run the simulators with PARSEC benchmarks.
 
