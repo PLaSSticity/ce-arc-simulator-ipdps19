@@ -140,13 +140,16 @@ PATH=$VISER_EXP:$PATH
 
 ## Examples
 
+### Sanity Test
 Here are some short-running experiments  with PARSEC benchmarks to test whether your setup is working.
 
-```Bash
+```
 arc --tools=pintool,mesi8 --tasks=build,run,result --workload=test --bench=blackscholes,x264 --pinThreads=8 --core=8 --outputDir=8core-experiments --trials=1 --assert=False --xassert=False --printOnly=False --roiOnly=True --project=viser --lockstep=False --generateEnergyStats=True --verbose=1
 ```
 
-The experiment output is
+Ideally, the above command should build the provided simulators, execute the given configs with the given PARSEC benchmarks, and then plot results. The experiment output should be in `exp-output/8core-experiments` and the generated statistics and plots should be in `exp-products/8core-experiments`.
+
+### Execute PARSEC
 
 Here are some examples to run the simulators with PARSEC benchmarks.
 
