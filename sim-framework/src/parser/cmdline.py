@@ -1,9 +1,9 @@
-import argparse
 import ast
+import argparse
 
 from options import util
-from options.benchmarks import Benchmark
 from options.projects import Project
+from options.benchmarks import Benchmark
 
 
 class CmdLine:
@@ -172,20 +172,26 @@ class CmdLine:
             default="simsmall",
             choices=["test", "simdev", "simsmall", "simmedium", "simlarge", "native"])
         self.parser.add_argument("--trials", help="number of trials", type=int, default=1)
-        self.parser.add_argument(
-            "--bench", help="list of benchmarks, or all,"
-            " or none", default="none")
-        self.parser.add_argument(
-            "--pinThreads", help="number of PARSEC benchmark threads", type=int, default=8)
-        self.parser.add_argument(
-            "--pid", help="the pid of application process to be attatched", type=int, default=0)
-        self.parser.add_argument(
-            "--cores", help="number of cores in the simulator", type=int, default=8)
-        self.parser.add_argument(
-            "--outputDir",
-            help="output directory relative to"
-            " ~/exp-output",
-            default="viser-temp")
+        self.parser.add_argument("--bench",
+                                 help="list of benchmarks, or all,"
+                                 " or none",
+                                 default="none")
+        self.parser.add_argument("--pinThreads",
+                                 help="number of PARSEC benchmark threads",
+                                 type=int,
+                                 default=8)
+        self.parser.add_argument("--pid",
+                                 help="the pid of application process to be attatched",
+                                 type=int,
+                                 default=0)
+        self.parser.add_argument("--cores",
+                                 help="number of cores in the simulator",
+                                 type=int,
+                                 default=8)
+        self.parser.add_argument("--outputDir",
+                                 help="output directory relative to"
+                                 " ~/exp-output",
+                                 default="viser-temp")
         self.parser.add_argument("--verbose", help="verbosity level", default=1, type=int)
         self.parser.add_argument(
             "--printOnly",
@@ -194,89 +200,77 @@ class CmdLine:
             choices=[False, True],
             # type bool causes problems
             type=ast.literal_eval)
-        self.parser.add_argument(
-            "--assert",
-            help="enable running Java "
-            "asserts in the backend simulator(s)",
-            default=False,
-            type=ast.literal_eval,
-            choices=[False, True],
-            required=True,
-            dest="jassert")
-        self.parser.add_argument(
-            "--xassert",
-            help="enable running xasserts "
-            "in the backend simulator(s)",
-            default=False,
-            type=ast.literal_eval,
-            choices=[False, True],
-            required=True)
+        self.parser.add_argument("--assert",
+                                 help="enable running Java "
+                                 "asserts in the backend simulator(s)",
+                                 default=False,
+                                 type=ast.literal_eval,
+                                 choices=[False, True],
+                                 required=True,
+                                 dest="jassert")
+        self.parser.add_argument("--xassert",
+                                 help="enable running xasserts "
+                                 "in the backend simulator(s)",
+                                 default=False,
+                                 type=ast.literal_eval,
+                                 choices=[False, True],
+                                 required=True)
         self.parser.add_argument("--period", help="run xasserts periodically", type=int, default=1)
-        self.parser.add_argument(
-            "--roiOnly",
-            help="Should simulation be "
-            "limited only to the ROI?",
-            default=True,
-            choices=[False, True],
-            type=ast.literal_eval)
+        self.parser.add_argument("--roiOnly",
+                                 help="Should simulation be "
+                                 "limited only to the ROI?",
+                                 default=True,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
         # Is the framework is running on the SOURCE machine?
-        self.parser.add_argument(
-            "--sameMachine",
-            help=argparse.SUPPRESS,
-            type=ast.literal_eval,
-            choices=[False, True],
-            required=True)
+        self.parser.add_argument("--sameMachine",
+                                 help=argparse.SUPPRESS,
+                                 type=ast.literal_eval,
+                                 choices=[False, True],
+                                 required=True)
         self.parser.add_argument("--project", help="project name", default="none")
-        self.parser.add_argument(
-            "--lockstep",
-            help="execute the Pintool and the backend in "
-            "lockstep",
-            default=False,
-            choices=[False, True],
-            type=ast.literal_eval)
-        self.parser.add_argument(
-            "--siteTracking",
-            help="track site info for each event ",
-            default=False,
-            choices=[False, True],
-            type=ast.literal_eval)
-        self.parser.add_argument(
-            "--attachPid",
-            help="apply Pin by attaching it to an already"
-            " running process",
-            default=False,
-            choices=[False, True],
-            type=ast.literal_eval)
-        self.parser.add_argument(
-            "--generateTrace",
-            help="generate a trace file mostly for "
-            "debugging purposes",
-            default=False,
-            choices=[False, True],
-            type=ast.literal_eval)
-        self.parser.add_argument(
-            "--pinTool",
-            help="choose a pinTool to use (viser or viserST)",
-            default="viser",
-            choices=["viser", "viserST"])
-        self.parser.add_argument(
-            "--confIndex",
-            help=" the index (>=0) of the conflicting"
-            " sites to validate with collision analysis ",
-            type=int,
-            default=-1)
-        self.parser.add_argument(
-            "--parallelBenches",
-            help=" the number (>=0) of the benchmarks"
-            " allowed to run parallelly ",
-            type=int,
-            default=1)
-        self.parser.add_argument(
-            "--generateEnergyStats",
-            help="generate energy stats by McPAT",
-            default=False,
-            choices=[False, True],
-            type=ast.literal_eval)
+        self.parser.add_argument("--lockstep",
+                                 help="execute the Pintool and the backend in "
+                                 "lockstep",
+                                 default=False,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
+        self.parser.add_argument("--siteTracking",
+                                 help="track site info for each event ",
+                                 default=False,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
+        self.parser.add_argument("--attachPid",
+                                 help="apply Pin by attaching it to an already"
+                                 " running process",
+                                 default=False,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
+        self.parser.add_argument("--generateTrace",
+                                 help="generate a trace file mostly for "
+                                 "debugging purposes",
+                                 default=False,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
+        self.parser.add_argument("--pinTool",
+                                 help="choose a pinTool to use (viser or viserST)",
+                                 default="viser",
+                                 choices=["viser", "viserST"])
+        self.parser.add_argument("--confIndex",
+                                 help=" the index (>=0) of the conflicting"
+                                 " sites to validate with collision analysis ",
+                                 type=int,
+                                 default=-1)
+        self.parser.add_argument("--parallelBenches",
+                                 help=" the number (>=0) of the benchmarks"
+                                 " allowed to run parallelly ",
+                                 type=int,
+                                 default=1)
+        self.parser.add_argument("--generateEnergyStats",
+                                 help="generate energy stats by McPAT",
+                                 default=False,
+                                 choices=[False, True],
+                                 type=ast.literal_eval)
 
     def parse(self, options):
         # Check if environment variables are properly defined

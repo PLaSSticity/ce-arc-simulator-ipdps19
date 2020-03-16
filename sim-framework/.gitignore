@@ -1,0 +1,95 @@
+# /
+/GPATH
+/GRTAGS
+/GTAGS
+/TAGS
+.tags
+.tags1
+/*.bak
+.ropeproject
+
+# /.vscode/
+/.vscode/tags
+
+# /mcpat_templates/
+/mcpat_templates/GPATH
+/mcpat_templates/GRTAGS
+/mcpat_templates/GTAGS
+/mcpat_templates/TAGS
+/mcpat_templates/tags
+/mcpat_templates/*.bak
+
+# /misc/
+/misc/GPATH
+/misc/GRTAGS
+/misc/GTAGS
+/misc/TAGS
+/misc/tags
+/misc/*.bak
+
+# /misc/x264-double-free/
+/misc/x264-double-free/GPATH
+/misc/x264-double-free/GRTAGS
+/misc/x264-double-free/GTAGS
+/misc/x264-double-free/TAGS
+/misc/x264-double-free/tags
+/misc/x264-double-free/*.bak
+
+# /scripts/
+/scripts/GPATH
+/scripts/GRTAGS
+/scripts/GTAGS
+/scripts/TAGS
+/scripts/tags
+/scripts/*.bak
+
+# /sniper_configs/
+/sniper_configs/GPATH
+/sniper_configs/GRTAGS
+/sniper_configs/GTAGS
+/sniper_configs/TAGS
+/sniper_configs/tags
+/sniper_configs/*.bak
+
+# /src/
+/src/GPATH
+/src/GRTAGS
+/src/GTAGS
+/src/TAGS
+/src/tags
+/src/*.bak
+
+# /src/options/
+/src/options/GPATH
+/src/options/GRTAGS
+/src/options/GTAGS
+/src/options/TAGS
+/src/options/tags
+/src/options/*.bak
+
+# /src/parser/
+/src/parser/GPATH
+/src/parser/GRTAGS
+/src/parser/GTAGS
+/src/parser/TAGS
+/src/parser/tags
+/src/parser/*.bak
+
+# /src/result/
+/src/result/GPATH
+/src/result/GRTAGS
+/src/result/GTAGS
+/src/result/TAGS
+/src/result/tags
+/src/result/*.bak
+
+# /src/tasks/
+/src/tasks/GPATH
+/src/tasks/GRTAGS
+/src/tasks/GTAGS
+/src/tasks/TAGS
+/src/tasks/tags
+/src/tasks/*.bak
+
+*.pyc
+.atomproject

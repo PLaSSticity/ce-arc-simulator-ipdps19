@@ -21,7 +21,8 @@ public class Conflict {
 	// flag to control this. Not count when the flag is true.
 	private boolean allowCounting = true;
 
-	public Conflict(int f0, int l0, int r0, int f1, int l1, int r1, int lf0, int ll0, int lf1, int ll1) {
+	public Conflict(int f0, int l0, int r0, int f1, int l1, int r1, int lf0, int ll0, int lf1,
+			int ll1) {
 		// put the site with smaller line number first;
 		if (l0 <= l1) {
 			fileNumber0 = (short) f0;
@@ -50,7 +51,8 @@ public class Conflict {
 	}
 
 	public void inc() {
-		if (!ViserSim.modelOnlyROI() || ViserSim.getPARSECPhase() == PARSEC_PHASE.IN_ROI && allowCounting) {
+		if (!ViserSim.modelOnlyROI()
+				|| ViserSim.getPARSECPhase() == PARSEC_PHASE.IN_ROI && allowCounting) {
 			counter++;
 			allowCounting = false;
 		}
@@ -58,19 +60,21 @@ public class Conflict {
 
 	public boolean isTheSame(int f0, int l0, int f1, int l1, int lf0, int ll0, int lf1, int ll1) {
 		if (l0 != 0 && l1 != 0) {
-		if (l0 <= l1)
-			return fileNumber0 == f0 && lineNumber0 == l0 && fileNumber1 == f1 && lineNumber1 == l1;
-		else
-			return fileNumber0 == f1 && lineNumber0 == l1 && fileNumber1 == f0 && lineNumber1 == l0;
+			if (l0 <= l1)
+				return fileNumber0 == f0 && lineNumber0 == l0 && fileNumber1 == f1
+						&& lineNumber1 == l1;
+			else
+				return fileNumber0 == f1 && lineNumber0 == l1 && fileNumber1 == f0
+						&& lineNumber1 == l0;
 		} else {
 			if (l0 <= l1)
-				return fileNumber0 == f0 && lineNumber0 == l0 && fileNumber1 == f1 && lineNumber1 == l1
-						&& lastFileNumber0 == lf0 && lastLineNumber0 == ll0 && lastFileNumber1 == lf1
-						&& lastLineNumber1 == ll1;
+				return fileNumber0 == f0 && lineNumber0 == l0 && fileNumber1 == f1
+						&& lineNumber1 == l1 && lastFileNumber0 == lf0 && lastLineNumber0 == ll0
+						&& lastFileNumber1 == lf1 && lastLineNumber1 == ll1;
 			else
-				return fileNumber0 == f1 && lineNumber0 == l1 && fileNumber1 == f0 && lineNumber1 == l0
-						&& lastFileNumber0 == lf1 && lastLineNumber0 == ll1 && lastFileNumber1 == lf0
-						&& lastLineNumber1 == ll0;
+				return fileNumber0 == f1 && lineNumber0 == l1 && fileNumber1 == f0
+						&& lineNumber1 == l0 && lastFileNumber0 == lf1 && lastLineNumber0 == ll1
+						&& lastFileNumber1 == lf0 && lastLineNumber1 == ll0;
 		}
 	}
 
@@ -86,12 +90,14 @@ public class Conflict {
 	public String toString() {
 		String res;
 		if (lineNumber0 != 0 && lineNumber1 != 0) {
-			res = fileNumber0 + ":" + lineNumber0 + ":" + routineNumber0 + " vs. "
-				+ fileNumber1 + ":" + lineNumber1 + ":" + routineNumber1 + ". (Dynamic count: " + counter + ")";
+			res = fileNumber0 + ":" + lineNumber0 + ":" + routineNumber0 + " vs. " + fileNumber1
+					+ ":" + lineNumber1 + ":" + routineNumber1 + ". (Dynamic count: " + counter
+					+ ")";
 		} else {
-			res = fileNumber0 + ":" + lineNumber0 + ":" + routineNumber0 + "(callerSite: " + lastFileNumber0 + ":"
-					+ lastLineNumber0 + ") vs. " + fileNumber1 + ":" + lineNumber1 + ":" + routineNumber1
-					+ "(callerSite: " + lastFileNumber1 + ":" + lastLineNumber1 + "). (Dynamic count: " + counter + ")";
+			res = fileNumber0 + ":" + lineNumber0 + ":" + routineNumber0 + "(callerSite: "
+					+ lastFileNumber0 + ":" + lastLineNumber0 + ") vs. " + fileNumber1 + ":"
+					+ lineNumber1 + ":" + routineNumber1 + "(callerSite: " + lastFileNumber1 + ":"
+					+ lastLineNumber1 + "). (Dynamic count: " + counter + ")";
 		}
 		return res;
 	}

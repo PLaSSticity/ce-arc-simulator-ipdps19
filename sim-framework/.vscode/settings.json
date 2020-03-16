@@ -1,0 +1,16 @@
+{
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "files.trimFinalNewlines": true,
+    "files.insertFinalNewline": true,
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}/src",
+        "${workspaceFolder}/src/options",
+        "${workspaceFolder}/src/parser",
+        "${workspaceFolder}/src/result",
+        "${workspaceFolder}/src/tasks"
+    ],
+    "python.formatting.provider": "yapf",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true
+}

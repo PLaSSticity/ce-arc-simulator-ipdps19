@@ -1,5 +1,5 @@
-import math
 import os
+import math
 
 
 class Constants():
@@ -9,8 +9,8 @@ class Constants():
     PIN_ROOT = os.getenv('PIN_ROOT')
     VS_PINTOOL_ROOT = os.getenv('PINTOOL_ROOT')  # the default Viser pintool
     ST_PINTOOL_ROOT = os.getenv('ST_PINTOOL_ROOT')  # the ViserST pintool
-    ST_PINTOOL_ROOT = (PIN_ROOT + "/source/tools/ViserST") if (
-        ST_PINTOOL_ROOT is None) else ST_PINTOOL_ROOT
+    ST_PINTOOL_ROOT = (PIN_ROOT +
+                       "/source/tools/ViserST") if (ST_PINTOOL_ROOT is None) else ST_PINTOOL_ROOT
     PARSEC_ROOT = os.getenv('PARSEC_ROOT', "")
 
     MESISIM_ROOT = os.getenv('MESISIM_ROOT')
@@ -69,9 +69,9 @@ class Constants():
     PAUSESIM_CLASSPATH = (" -Xmx42g -classpath " + VISERSIM_ROOT + "/bin/:" + VISERSIM_ROOT +
                           GUAVA_JAR + VISERSIM_ROOT + JOPTSIMPLE_JAR + " simulator.viser.ViserSim")
 
-    RESTARTSIM_CLASSPATH = (
-        " -Xmx60g -classpath " + VISERSIM_ROOT + "/bin/:" + VISERSIM_ROOT + GUAVA_JAR +
-        VISERSIM_ROOT + JOPTSIMPLE_JAR + " simulator.viser.ViserSim")
+    RESTARTSIM_CLASSPATH = (" -Xmx60g -classpath " + VISERSIM_ROOT + "/bin/:" + VISERSIM_ROOT +
+                            GUAVA_JAR + VISERSIM_ROOT + JOPTSIMPLE_JAR +
+                            " simulator.viser.ViserSim")
 
     RCCSISIM_CLASSPATH = (" -Xmx30g -classpath " + RCCSISIM_ROOT + "/bin/:" + RCCSISIM_ROOT +
                           GUAVA_JAR + RCCSISIM_ROOT + JOPTSIMPLE_JAR + " simulator.rccsi.RCCSISim")
@@ -83,17 +83,17 @@ class Constants():
     HTTP_CLIENT0 = (HTTPD_ROOT + "/trigger-con0.sh") if (HTTPD_ROOT is not None) else None
     HTTP_CLIENT1 = (HTTPD_ROOT + "/trigger-con1.sh") if (HTTPD_ROOT is not None) else None
 
-    HTTPD_DEBUG_START = (HTTPD_ROOT + "/bin/httpd -X -k start") if (
-        HTTPD_ROOT is not None) else None
+    HTTPD_DEBUG_START = (HTTPD_ROOT +
+                         "/bin/httpd -X -k start") if (HTTPD_ROOT is not None) else None
     HTTPD_DEBUG_STOP = (HTTPD_ROOT + "/bin/httpd -X -k stop") if (HTTPD_ROOT is not None) else None
 
     # mysqld constants
     MEMCACHED_START = (MEMCACHED_ROOT + "/bin/memcached") if (MEMCACHED_ROOT is not None) else None
     MEMCACHED_STOP = ("killall -15 " + MEMCACHED_START) if (MEMCACHED_START is not None) else None
-    MEMCACHED_CLIENT0 = (MEMCACHED_ROOT + "/reproduce-pkg/trigger") if (
-        MEMCACHED_ROOT is not None) else None
-    MEMCACHED_CLIENT1 = (MEMCACHED_ROOT + "/reproduce-pkg/trigger") if (
-        MEMCACHED_ROOT is not None) else None
+    MEMCACHED_CLIENT0 = (MEMCACHED_ROOT +
+                         "/reproduce-pkg/trigger") if (MEMCACHED_ROOT is not None) else None
+    MEMCACHED_CLIENT1 = (MEMCACHED_ROOT +
+                         "/reproduce-pkg/trigger") if (MEMCACHED_ROOT is not None) else None
 
     # memcached constants
     MYSQLD_START = (
@@ -105,8 +105,8 @@ class Constants():
         "/data --plugin-dir=" + MYSQLD_ROOT + "/lib/plugin") if (MYSQLD_ROOT is not None) else None
     MYSQLD_CACHED_THREADS = " --thread_cache_size="
     MYSQLD_INNODB_THREADS = " --innodb-thread-concurrency="
-    MYSQLD_STOP = (MYSQLD_ROOT + "/support-files/mysql.server stop") if (
-        MYSQLD_ROOT is not None) else None
+    MYSQLD_STOP = (MYSQLD_ROOT +
+                   "/support-files/mysql.server stop") if (MYSQLD_ROOT is not None) else None
     MYSQL_CLIENT0 = (MYSQLD_ROOT + "/trigger-con0.sh") if (MYSQLD_ROOT is not None) else None
     MYSQL_CLIENT1 = (MYSQLD_ROOT + "/trigger-con1.sh") if (MYSQLD_ROOT is not None) else None
 

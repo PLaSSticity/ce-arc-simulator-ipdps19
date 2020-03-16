@@ -1,7 +1,7 @@
+from tasks.synctask import SyncTask
 from options.constants import Constants
 from tasks.collecttask import CollectTask
 from tasks.producttask import ProductTask
-from tasks.synctask import SyncTask
 
 
 class ResultTask(Constants):

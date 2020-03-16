@@ -1,8 +1,8 @@
-from options.constants import Constants
 from result.result import Result
-from result.resultset import ResultSet
-from tasks.collecttask import CollectTask
 from tasks.mcpattask import McPATTask
+from result.resultset import ResultSet
+from options.constants import Constants
+from tasks.collecttask import CollectTask
 
 
 class ProductTask(Constants):

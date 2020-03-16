@@ -12,10 +12,10 @@ interface CacheCallbacks<Line extends ViserLine> {
 	 * Called whenever a line needs to be evicted.
 	 *
 	 * @param set
-	 *            the set from which we need to evict something; the list is ordered from MRU
-	 *            (front) to LRU (back).
+	 *                  the set from which we need to evict something; the list is ordered from MRU
+	 *                  (front) to LRU (back).
 	 * @param level
-	 *            the level of the cache where the eviction is happening
+	 *                  the level of the cache where the eviction is happening
 	 * @return the line to evict
 	 */
 	Line eviction(final Line incoming, final LinkedList<Line> set, CacheLevel level,
@@ -94,11 +94,11 @@ public class HierarchicalCache<Line extends ViserLine> {
 	 * reverse level order, from highest/last-level -> lowest-level.
 	 *
 	 * @param thisConfig
-	 *            geometry and event handlers for this cache
+	 *                       geometry and event handlers for this cache
 	 * @param nextCache
-	 *            the next higher cache in the hierarchy
+	 *                       the next higher cache in the hierarchy
 	 * @param factory
-	 *            factory for making Line objects
+	 *                       factory for making Line objects
 	 */
 	public HierarchicalCache(CacheConfiguration<Line> thisConfig, CacheCallbacks<Line> handler,
 			HierarchicalCache<Line> nextCache, LineFactory<Line> factory,
@@ -442,7 +442,7 @@ public class HierarchicalCache<Line extends ViserLine> {
 	 * Write back the values and read encoding to the L2 cache line.
 	 *
 	 * @param line
-	 *            is the L1 cache line
+	 *                 is the L1 cache line
 	 */
 	void handleWriteAfterReadUpgrade(Line l1Line, long enc) {
 		assert levelInHierarchy == CacheLevel.L2 : "This method is valid for only L2 caches.";
@@ -1115,10 +1115,10 @@ public class HierarchicalCache<Line extends ViserLine> {
 	 * Lookup the given address in the memory hierarchy.
 	 *
 	 * @param address
-	 *            the memory address being accessed
+	 *                       the memory address being accessed
 	 * @param reorderSet
-	 *            If true and the line is found in this cache, move the line to MRU position. If
-	 *            false, do not modify the set ordering.
+	 *                       If true and the line is found in this cache, move the line to MRU
+	 *                       position. If false, do not modify the set ordering.
 	 * @return an AccessReturn object that 1) says where in the memory hierarchy the requested line
 	 *         was found and 2) holds a reference to the line (which may reside in any level of the
 	 *         hierarchy). If the address is not cached, then the line reference is null.

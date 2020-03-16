@@ -14,46 +14,45 @@ using namespace std;
 
 string fifoNamePrefix = string(getenv("PINTOOL_ROOT")) + "/fifo.tid";
 
-
 void handleMkfifoError(string fifoName, int ret, uint32_t numFifos) {
   cerr << "[namedpipe] mkfifo has failed for fifo:" << fifoName
        << " Error: " << errno << " ";
   switch (errno) {
-    case EACCES : {
-      cout << "EACCESS";
-      break;
-    }
-    case EDQUOT: {
-      cout << "EDQUOT";
-      break;
-    }
-    case EEXIST: {
-      cout << "EEXIST";
-      break;
-    }
-    case ENAMETOOLONG: {
-      cout << "ENAMETOOLONG";
-      break;
-    }
-    case ENOENT: {
-      cout << "ENOENT";
-      break;
-    }
-    case ENOSPC: {
-      cout << "ENOSPC";
-      break;
-    }
-    case ENOTDIR: {
-      cout << "ENOTDIR";
-      break;
-    }
-    case EROFS: {
-      cout << "EROFS";
-      break;
-    }
-    default: {
-      cout << "Unknown error type";
-    }
+  case EACCES: {
+    cout << "EACCESS";
+    break;
+  }
+  case EDQUOT: {
+    cout << "EDQUOT";
+    break;
+  }
+  case EEXIST: {
+    cout << "EEXIST";
+    break;
+  }
+  case ENAMETOOLONG: {
+    cout << "ENAMETOOLONG";
+    break;
+  }
+  case ENOENT: {
+    cout << "ENOENT";
+    break;
+  }
+  case ENOSPC: {
+    cout << "ENOSPC";
+    break;
+  }
+  case ENOTDIR: {
+    cout << "ENOTDIR";
+    break;
+  }
+  case EROFS: {
+    cout << "EROFS";
+    break;
+  }
+  default: {
+    cout << "Unknown error type";
+  }
   }
   cout << endl;
 
@@ -64,7 +63,7 @@ void handleMkfifoError(string fifoName, int ret, uint32_t numFifos) {
   }
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   if (argc < 2) {
     cerr << "[namedpipe] Usage: " << argv[0] << " NUMFIFOs" << endl;
     return 1;
@@ -73,13 +72,15 @@ int main(int argc, char** argv) {
 
   for (uint32_t i = 0; i < numFifos; i++) {
     string fifoName = fifoNamePrefix + boost::lexical_cast<string>(i);
-    // cout << "[namedpipe] Before opening the fifo " << fifoName << " for reading" << endl;
+    // cout << "[namedpipe] Before opening the fifo " << fifoName << " for
+    // reading" << endl;
     int ret = mkfifo(fifoName.c_str(), 0666); // Create the FIFO
     if (ret == -1) {
       handleMkfifoError(fifoName, ret, numFifos);
       exit(EXIT_FAILURE);
     }
-    // cout << "[namedpipe] Opened the fifo " << fifoName << " for reading" << endl;
+    // cout << "[namedpipe] Opened the fifo " << fifoName << " for reading" <<
+    // endl;
   }
   return 0;
 }

@@ -1,18 +1,18 @@
 import os
 
-from options import merge, util
-from options.constants import Constants
-from result.bargraph import BarGraph
-from result.htmlproduct import HTMLProduct
-from result.resultset import ResultSet
-from result.stackedbargraph import StackedBarGraph
-from result.statskeys import EnergyStatsKeys as ESKeys
-from result.statskeys import MESISimKeys as MSKeys
-from result.statskeys import PauseSimKeys, PintoolKeys
-from result.statskeys import RCCSISimKeys as RSKeys
-from result.statskeys import SimKeys, StackedKeys
-from result.statskeys import ViserSimKeys as VSKeys
+from options import util, merge
 from tasks.runtask import RunTask
+from result.bargraph import BarGraph
+from result.resultset import ResultSet
+from result.statskeys import SimKeys
+from result.statskeys import MESISimKeys as MSKeys
+from result.statskeys import PintoolKeys, StackedKeys, PauseSimKeys
+from result.statskeys import RCCSISimKeys as RSKeys
+from result.statskeys import ViserSimKeys as VSKeys
+from result.statskeys import EnergyStatsKeys as ESKeys
+from options.constants import Constants
+from result.htmlproduct import HTMLProduct
+from result.stackedbargraph import StackedBarGraph
 
 
 class Result(Constants):
@@ -1264,8 +1264,9 @@ class Result(Constants):
                                 if key not in di_trial:
                                     di_trial.update({key: 0})
                             di_ms = merge.merge(li_di_bench, key)
-                            statsHtm.write(
-                                "<td>" + str(round(di_ms[key], Result.PRECISION_DIGITS)) + "</td>")
+                            statsHtm.write("<td>" +
+                                           str(round(di_ms[key], Result.PRECISION_DIGITS)) +
+                                           "</td>")
                 statsHtm.write("</tr>")
         finally:
             statsHtm.write("</table>")

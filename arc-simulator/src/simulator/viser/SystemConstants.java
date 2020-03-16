@@ -126,23 +126,23 @@ class SystemConstants {
 	public static void setLLCAccessTimes(int numCores) {
 		switch (numCores) {
 			case 4: {
-				L3_ACCESS = 25;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 25;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 8: {
-				L3_ACCESS = 35;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 35;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 16: {
-				L3_ACCESS = 40;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 40;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 32: {
-				L3_ACCESS = 50;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 50;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			default: {

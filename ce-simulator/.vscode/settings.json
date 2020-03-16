@@ -1,0 +1,17 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/bin": true,
+        "**/.gitignore": true,
+        "**/.clang-format": true,
+        "**/.directory": true,
+        "**/.project": true,
+        "**/lib": true
+    },
+    // "java.format.settings.url": "${workspaceFolder}/.settings/org.eclipse.jdt.core.prefs"
+    "java.format.settings.url": "${workspaceFolder}/eclipse-format.xml"
+}

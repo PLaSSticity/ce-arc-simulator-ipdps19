@@ -34,7 +34,7 @@ extern UINT64 checkedEvents;
 extern ofstream eventTrace;
 extern ofstream eventTraceTextFile;
 
-extern ifstream* perThreadFifos;
+extern ifstream *perThreadFifos;
 
 extern KNOB<BOOL> lockstep;
 extern string perThreadFIFOPrefix;
@@ -79,7 +79,7 @@ static list<Event> waitingMap;
 
 VOID initAnalysisCallback() { s_writeAddr = PIN_CreateThreadDataKey(NULL); }
 
-size_t myStrlen(const char* str) {
+size_t myStrlen(const char *str) {
   // cout << "my strlen: " << str << endl;
   int i;
   for (i = 0; str[i]; i++)
@@ -87,14 +87,18 @@ size_t myStrlen(const char* str) {
   return i;
 }
 
-static BOOL isLockAcquire(const char* rtnName) {
-  return strstr(rtnName, "pthread_mutex_lock") || strstr(rtnName, "pthread_mutex_timedlock") ||
-         strstr(rtnName, "pthread_rwlock_rdlock") || strstr(rtnName, "pthread_rwlock_wrlock") ||
-         strstr(rtnName, "pthread_mutex_trylock") || strstr(rtnName, "pthread_rwlock_tryrdlock") ||
+static BOOL isLockAcquire(const char *rtnName) {
+  return strstr(rtnName, "pthread_mutex_lock") ||
+         strstr(rtnName, "pthread_mutex_timedlock") ||
+         strstr(rtnName, "pthread_rwlock_rdlock") ||
+         strstr(rtnName, "pthread_rwlock_wrlock") ||
+         strstr(rtnName, "pthread_mutex_trylock") ||
+         strstr(rtnName, "pthread_rwlock_tryrdlock") ||
          strstr(rtnName, "pthread_rwlock_trywrlock") ||
          // for mysqld
-         ((strstr(rtnName, "PolicyMutex") || strstr(rtnName, "TrxInInnoDB")) && strstr(rtnName, "enter")) ||
-         strstr(rtnName, "ACQUIRE_FENCE");  // custom hook for canneal
+         ((strstr(rtnName, "PolicyMutex") || strstr(rtnName, "TrxInInnoDB")) &&
+          strstr(rtnName, "enter")) ||
+         strstr(rtnName, "ACQUIRE_FENCE"); // custom hook for canneal
 
   // In its mbuffer.c file, dedup uses spin locks in default, but can be
   // configured to use mutexes only. strstr(rtnName, "pthread_spin_lock") ||
@@ -104,8 +108,9 @@ static BOOL isLockAcquire(const char* rtnName) {
   // We have already had THREAD_START, which is considered as a aquire.
 }
 
-static BOOL isLockRelease(const char* rtnName) {
-  return strstr(rtnName, "pthread_mutex_unlock") || strstr(rtnName, "pthread_rwlock_unlock") ||
+static BOOL isLockRelease(const char *rtnName) {
+  return strstr(rtnName, "pthread_mutex_unlock") ||
+         strstr(rtnName, "pthread_rwlock_unlock") ||
          // We don't consider the following two pthread functions lock
          // operations in the simulator since they don't manipulate locks. It
          // should also be safe to not consider them region boundaries since
@@ -113,8 +118,9 @@ static BOOL isLockRelease(const char* rtnName) {
          // operations. strstr(rtnName, "pthread_cond_broadcast") ||
          // strstr(rtnName, "pthread_cond_signal") ||
          // for mysqld
-         ((strstr(rtnName, "PolicyMutex") || strstr(rtnName, "TrxInInnoDB")) && strstr(rtnName, "exit")) ||
-         strstr(rtnName, "RELEASE_FENCE");  // custom hook for canneal
+         ((strstr(rtnName, "PolicyMutex") || strstr(rtnName, "TrxInInnoDB")) &&
+          strstr(rtnName, "exit")) ||
+         strstr(rtnName, "RELEASE_FENCE"); // custom hook for canneal
 
   // strstr(rtnName, "pthread_spin_unlock") ||
 
@@ -122,11 +128,12 @@ static BOOL isLockRelease(const char* rtnName) {
   // we have already consider pthread_create as a release (THREAD_SPAWN)
 }
 
-static BOOL isLockAcqAndRls(const char* rtnName) {
+static BOOL isLockAcqAndRls(const char *rtnName) {
   return strstr(rtnName, "pthread_cond_timedwait") ||
          // As suggested by Mike, we can still treat pthread_barrier_wait() as a
          // release PLUS an acquire.
-         strstr(rtnName, "pthread_barrier_wait") || strstr(rtnName, "pthread_cond_wait");
+         strstr(rtnName, "pthread_barrier_wait") ||
+         strstr(rtnName, "pthread_cond_wait");
 }
 
 VOID roiStart(THREADID tid) {
@@ -169,12 +176,13 @@ VOID serverRoiEnd(THREADID tid) {
 
 // Executed if constants::PRINT_RTN_NAMES is true
 VOID rtnStart(THREADID tid, ADDRINT addr) {
-  g_Lock.lock(tid);  // Synchronization is quite costly, but needed for printing
-                     // readability
+  g_Lock.lock(tid); // Synchronization is quite costly, but needed for printing
+                    // readability
   assert(tid >= 0);
-  const char* rtnName = RTN_FindNameByAddress(addr).c_str();
+  const char *rtnName = RTN_FindNameByAddress(addr).c_str();
   ;
-  if (isLockAcquire(rtnName) || isLockRelease(rtnName) || isLockAcqAndRls(rtnName)) {
+  if (isLockAcquire(rtnName) || isLockRelease(rtnName) ||
+      isLockAcqAndRls(rtnName)) {
     cout << "tid: " << tid << " rtnStart: " << rtnName << endl;
   }
   g_Lock.unlock();
@@ -184,87 +192,104 @@ VOID rtnStart(THREADID tid, ADDRINT addr) {
 VOID rtnFini(THREADID tid, ADDRINT addr, ADDRINT outcome) {
   g_Lock.lock(tid);
   assert(tid >= 0);
-  const char* rtnName = RTN_FindNameByAddress(addr).c_str();
+  const char *rtnName = RTN_FindNameByAddress(addr).c_str();
   ;
-  if (isLockAcquire(rtnName) || isLockRelease(rtnName) || isLockAcqAndRls(rtnName)) {
-    cout << "tid: " << tid << " rtnFini: " << rtnName << " with return value " << outcome << endl;
+  if (isLockAcquire(rtnName) || isLockRelease(rtnName) ||
+      isLockAcqAndRls(rtnName)) {
+    cout << "tid: " << tid << " rtnFini: " << rtnName << " with return value "
+         << outcome << endl;
   }
   g_Lock.unlock();
 }
 
-VOID prepareAndSendMemoryEvent(THREADID tid, EventType type, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16 opcode,
-                               UINT16 line, UINT16 fno, UINT16 rtnno, UINT16 lastLine, UINT16 lastFno) {
+VOID prepareAndSendMemoryEvent(THREADID tid, EventType type, ADDRINT addr,
+                               UINT32 size, BOOL isStackRef, UINT16 opcode,
+                               UINT16 line, UINT16 fno, UINT16 rtnno,
+                               UINT16 lastLine, UINT16 lastFno) {
   // Dereference the memory address to get the value, but it is not recommended.
   // Instead, we should use PIN_SafeCopy()
-  switch (size) {  // in bytes
-    case 0: {
-      addEvent(Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode));
-      break;
-    }
-    case 1: {
-      UINT8 value;
-      size_t bytesRead = PIN_SafeCopy(&value, static_cast<UINT8*>(Addrint2VoidStar(addr)), 1);
-      assert(bytesRead == 1);
-      Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode);
-      e.m_value = value;
-      addEvent(e);
-      break;
-    }
-    case 2: {
-      UINT16 value;
-      size_t bytesRead = PIN_SafeCopy(&value, static_cast<UINT16*>(Addrint2VoidStar(addr)), 2);
-      assert(bytesRead == 2);
-      Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode);
-      e.m_value = value;
-      addEvent(e);
-      break;
-    }
-    case 4: {
-      UINT32 value;
-      size_t bytesRead = PIN_SafeCopy(&value, static_cast<UINT32*>(Addrint2VoidStar(addr)), 4);
-      assert(bytesRead == 4);
-      Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode);
-      e.m_value = value;
-      addEvent(e);
-      break;
-    }
-    case 8: {
-      UINT64 value;
-      size_t bytesRead = PIN_SafeCopy(&value, static_cast<UINT64*>(Addrint2VoidStar(addr)), 8);
-      assert(bytesRead == 8);
-      Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode);
-      e.m_value = value;
-      addEvent(e);
-      break;
-    }
-    case 16:    // XORPS, MOVDQA, MOVDQU
-    case 32:    // VMOVDQA
-    case 64: {  // PREFETCHT0
-      // A 16 byte access will be broken up into two 8 byte accesses, on a 64-bit
-      // machine
-      // Intel machines are little endian, and we are assuming a 64-bit
-      // architecture
+  switch (size) { // in bytes
+  case 0: {
+    addEvent(Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                rtnno, lastLine, lastFno, opcode));
+    break;
+  }
+  case 1: {
+    UINT8 value;
+    size_t bytesRead =
+        PIN_SafeCopy(&value, static_cast<UINT8 *>(Addrint2VoidStar(addr)), 1);
+    assert(bytesRead == 1);
+    Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                 rtnno, lastLine, lastFno, opcode);
+    e.m_value = value;
+    addEvent(e);
+    break;
+  }
+  case 2: {
+    UINT16 value;
+    size_t bytesRead =
+        PIN_SafeCopy(&value, static_cast<UINT16 *>(Addrint2VoidStar(addr)), 2);
+    assert(bytesRead == 2);
+    Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                 rtnno, lastLine, lastFno, opcode);
+    e.m_value = value;
+    addEvent(e);
+    break;
+  }
+  case 4: {
+    UINT32 value;
+    size_t bytesRead =
+        PIN_SafeCopy(&value, static_cast<UINT32 *>(Addrint2VoidStar(addr)), 4);
+    assert(bytesRead == 4);
+    Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                 rtnno, lastLine, lastFno, opcode);
+    e.m_value = value;
+    addEvent(e);
+    break;
+  }
+  case 8: {
+    UINT64 value;
+    size_t bytesRead =
+        PIN_SafeCopy(&value, static_cast<UINT64 *>(Addrint2VoidStar(addr)), 8);
+    assert(bytesRead == 8);
+    Event e = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                 rtnno, lastLine, lastFno, opcode);
+    e.m_value = value;
+    addEvent(e);
+    break;
+  }
+  case 16:   // XORPS, MOVDQA, MOVDQU
+  case 32:   // VMOVDQA
+  case 64: { // PREFETCHT0
+    // A 16 byte access will be broken up into two 8 byte accesses, on a 64-bit
+    // machine
+    // Intel machines are little endian, and we are assuming a 64-bit
+    // architecture
 
-      for (UINT32 s = 0; s < size; s += 8) {
-        UINT64 eightBytes;
-        size_t bytesRead = PIN_SafeCopy(&eightBytes, static_cast<UINT64*>(Addrint2VoidStar(addr + s)), 8);
-        assert(bytesRead == 8);
-        Event e = Event::MemoryEvent(tid, type, addr + s, 8, isStackRef, line, fno, rtnno, lastLine, lastFno, opcode);
-        e.m_value = eightBytes;
-        addEvent(e);
-      }
-      break;
+    for (UINT32 s = 0; s < size; s += 8) {
+      UINT64 eightBytes;
+      size_t bytesRead = PIN_SafeCopy(
+          &eightBytes, static_cast<UINT64 *>(Addrint2VoidStar(addr + s)), 8);
+      assert(bytesRead == 8);
+      Event e = Event::MemoryEvent(tid, type, addr + s, 8, isStackRef, line,
+                                   fno, rtnno, lastLine, lastFno, opcode);
+      e.m_value = eightBytes;
+      addEvent(e);
     }
-    default: {
-      cerr << "Size not handled:" << size << " Instruction:" << OPCODE_StringShort((OPCODE)opcode) << endl;
-      assert(false);
-    }
+    break;
+  }
+  default: {
+    cerr << "Size not handled:" << size
+         << " Instruction:" << OPCODE_StringShort((OPCODE)opcode) << endl;
+    assert(false);
+  }
   }
 }
 
 VOID ignoreConflictsBegin(THREADID tid) {
   assert(tid >= 0);
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tdata->m_tid == tid);
   assert(tdata->ignoredFuncs >= 0);
@@ -275,7 +300,8 @@ VOID ignoreConflictsBegin(THREADID tid) {
 
 VOID ignoreConflictsEnd(THREADID tid) {
   assert(tid >= 0);
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tdata->m_tid == tid);
   assert(tdata->ignoredFuncs > 0);
@@ -288,7 +314,8 @@ VOID ignoreConflictsEnd(THREADID tid) {
 // the assertion failure with the counter at thread ends (observed in mysqld).
 VOID ignoreConflictsDoubleEnd(THREADID tid) {
   assert(tid >= 0);
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tdata->m_tid == tid);
   assert(tdata->ignoredFuncs > 0);
@@ -299,14 +326,16 @@ VOID ignoreConflictsDoubleEnd(THREADID tid) {
 }
 
 BOOL isIgnored(THREADID tid) {
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tdata->m_tid == tid);
   assert(tdata->ignoredFuncs >= 0);
   return (tdata->ignoredFuncs > 0);
 }
 
-BOOL isInterestingSite(int16_t tid, UINT64 value, UINT16 line, UINT16 fno, UINT16 rtnno) {
+BOOL isInterestingSite(int16_t tid, UINT64 value, UINT16 line, UINT16 fno,
+                       UINT16 rtnno) {
   return (line == intstLine0 || line == intstLine1);
   // return (line == 1147 || line == 1120);
   // for bodytrack
@@ -315,8 +344,9 @@ BOOL isInterestingSite(int16_t tid, UINT64 value, UINT16 line, UINT16 fno, UINT1
   // == 751) || (value <= 10 && tid == 4 && line == 755));
 }
 
-VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16 line,
-                         UINT16 fno, UINT16 rtnno) {
+VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size,
+                         BOOL isStackRef, UINT16 line, UINT16 fno,
+                         UINT16 rtnno) {
   assert(tid >= 0);
   if (isIgnored(tid))
     return;
@@ -331,24 +361,28 @@ VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size,
 
   // detect conflicts
 
-  size_t bytes = PIN_SafeCopy(&value, static_cast<UINT64*>(Addrint2VoidStar(addr)), size);
+  size_t bytes =
+      PIN_SafeCopy(&value, static_cast<UINT64 *>(Addrint2VoidStar(addr)), size);
   assert(bytes == size);
-  Event e1 = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno, rtnno, line, fno, 0);
+  Event e1 = Event::MemoryEvent(tid, type, addr, size, isStackRef, line, fno,
+                                rtnno, line, fno, 0);
   e1.m_value = value;
   Event e;
-  if (line == intstLine1)  // only check the second site
+  if (line == intstLine1) // only check the second site
   {
     g_waitingMapLock.lock(tid);
     checkedEvents++;
     // map<ADDRINT, Event>::iterator it = find(addr); // addr is the same
-    for (list<Event>::iterator it = waitingMap.begin(); it != waitingMap.end(); it++) {
+    for (list<Event>::iterator it = waitingMap.begin(); it != waitingMap.end();
+         it++) {
       // if (it != waitingMap.end()) {
       e = *it;
       // cout << "In map: " << e.toString() << endl;
       assert(e.m_tid != tid);
       if ((e.m_eventType != type || type == MEMORY_WRITE) &&
           ((e.m_addr <= addr && addr < e.m_addr + e.m_memOpSize) ||
-           (e.m_addr < addr + size && addr + size <= e.m_addr + e.m_memOpSize))) {  // addr overlapping
+           (e.m_addr < addr + size &&
+            addr + size <= e.m_addr + e.m_memOpSize))) { // addr overlapping
         cout << "Data race: " << endl;
         cout << "Previous: " << e.toString() << endl;
         cout << "current: " << e1.toString() << endl;
@@ -360,7 +394,7 @@ VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size,
     }
     g_waitingMapLock.unlock();
   }
-  if (line == intstLine0)  // only block the first site
+  if (line == intstLine0) // only block the first site
   {
     g_waitingMapLock.lock(tid);
     waitingMap.push_front(e1);
@@ -376,7 +410,8 @@ VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size,
     //}
     // clear map
     g_waitingMapLock.lock(tid);
-    for (list<Event>::iterator it = waitingMap.begin(); it != waitingMap.end(); it++)
+    for (list<Event>::iterator it = waitingMap.begin(); it != waitingMap.end();
+         it++)
       if (it->m_tid == tid) {
         waitingMap.erase(it);
         break;
@@ -385,11 +420,13 @@ VOID doCollisionAnalysis(int16_t tid, EventType type, ADDRINT addr, UINT32 size,
   }
 }
 
-VOID readAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16 opcode, UINT16 line, UINT16 fno,
-                UINT16 rtnno, BOOL isAtomic) {
+VOID readAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef,
+                UINT16 opcode, UINT16 line, UINT16 fno, UINT16 rtnno,
+                BOOL isAtomic) {
   // if (enableCollisionAnalysis && !isAtomic) {
   if (enableCollisionAnalysis) {
-    doCollisionAnalysis(tid, MEMORY_READ, addr, size, isStackRef, line, fno, rtnno);
+    doCollisionAnalysis(tid, MEMORY_READ, addr, size, isStackRef, line, fno,
+                        rtnno);
     return;
   }
   g_Lock.lock(tid);
@@ -399,18 +436,21 @@ VOID readAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16
     return;
   }
 
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
 
   if (isAtomic) {
     // An atomic read is basically two events - a read followed by a write
-    prepareAndSendMemoryEvent(tid, ATOMIC_READ, addr, size, isStackRef, opcode, line, fno, rtnno, tdata->lastLine,
+    prepareAndSendMemoryEvent(tid, ATOMIC_READ, addr, size, isStackRef, opcode,
+                              line, fno, rtnno, tdata->lastLine,
                               tdata->lastSrcFile);
     // Rui: The write is not required, because Pin always identifies an atomic
     // access as both read and write, and calls both readAccess() and
     // afterWriteAccess() for it. prepareAndSendMemoryEvent(tid, ATOMIC_WRITE,
     // addr, size, isStackRef, opcode, line, fno, rtnno);
   } else {
-    prepareAndSendMemoryEvent(tid, MEMORY_READ, addr, size, isStackRef, opcode, line, fno, rtnno, tdata->lastLine,
+    prepareAndSendMemoryEvent(tid, MEMORY_READ, addr, size, isStackRef, opcode,
+                              line, fno, rtnno, tdata->lastLine,
                               tdata->lastSrcFile);
   }
   g_Lock.unlock();
@@ -419,17 +459,19 @@ VOID readAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16
 // From DebugTrace/debugtrace.cpp: VOID ShowN(UINT32 n, VOID *ea)
 VOID handleOtherSizes(ADDRINT addr, UINT32 size) {
   UINT8 b[512];
-  UINT8* x;
+  UINT8 *x;
   if (size > 512) {
     x = new UINT8[size];
   } else {
     x = b;
   }
-  size_t bytesRead = PIN_SafeCopy(x, static_cast<UINT8*>(Addrint2VoidStar(addr)), size);
+  size_t bytesRead =
+      PIN_SafeCopy(x, static_cast<UINT8 *>(Addrint2VoidStar(addr)), size);
   assert(bytesRead == size);
 }
 
-VOID beforeWriteAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef, UINT16 opcode, BOOL isAtomic) {
+VOID beforeWriteAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef,
+                       UINT16 opcode, BOOL isAtomic) {
   g_Lock.lock(tid);
   assert(tid >= 0 && addr > 0);
   if (isIgnored(tid)) {
@@ -437,7 +479,8 @@ VOID beforeWriteAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef,
     return;
   }
 
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   if (isAtomic) {
     tdata->m_eventType = ATOMIC_WRITE;
@@ -454,12 +497,15 @@ VOID beforeWriteAccess(THREADID tid, ADDRINT addr, UINT32 size, BOOL isStackRef,
 }
 
 /* Required for getting the updated value after a write. */
-VOID afterWriteAccess(THREADID tid, UINT32 size, UINT16 opcode, UINT16 line, UINT16 fno, UINT16 rtnno) {
+VOID afterWriteAccess(THREADID tid, UINT32 size, UINT16 opcode, UINT16 line,
+                      UINT16 fno, UINT16 rtnno) {
   if (enableCollisionAnalysis) {
-    thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+    thread_local_data_t *tdata =
+        static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
     // if (tdata->m_eventType != ATOMIC_WRITE) {
-    doCollisionAnalysis(tdata->m_tid, tdata->m_eventType, tdata->m_addr, tdata->m_memOpSize, tdata->m_stackRef, line,
-                        fno, rtnno);
+    doCollisionAnalysis(tdata->m_tid, tdata->m_eventType, tdata->m_addr,
+                        tdata->m_memOpSize, tdata->m_stackRef, line, fno,
+                        rtnno);
     return;
     // }
   }
@@ -471,24 +517,29 @@ VOID afterWriteAccess(THREADID tid, UINT32 size, UINT16 opcode, UINT16 line, UIN
     return;
   }
 
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tid >= 0 && tdata->m_tid == tid);
-  assert(tdata->m_eventType == MEMORY_WRITE || tdata->m_eventType == ATOMIC_WRITE);
+  assert(tdata->m_eventType == MEMORY_WRITE ||
+         tdata->m_eventType == ATOMIC_WRITE);
   assert(tdata->m_memOpSize == size);
   assert(tdata->m_addr != 0);
 
   if (constants::IGNORE_STOSB && (OPCODE)opcode == XED_ICLASS_STOSB) {
     g_enqSTOSB++;
   } else {
-    prepareAndSendMemoryEvent(tdata->m_tid, tdata->m_eventType, tdata->m_addr, tdata->m_memOpSize, tdata->m_stackRef,
-                              opcode, line, fno, rtnno, tdata->lastLine, tdata->lastSrcFile);
+    prepareAndSendMemoryEvent(tdata->m_tid, tdata->m_eventType, tdata->m_addr,
+                              tdata->m_memOpSize, tdata->m_stackRef, opcode,
+                              line, fno, rtnno, tdata->lastLine,
+                              tdata->lastSrcFile);
   }
   g_Lock.unlock();
 }
 
 VOID analyzeSiteInfo(THREADID tid, UINT16 line, UINT16 fno) {
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   tdata->lastLine = line;
   tdata->lastSrcFile = fno;
 }
@@ -513,7 +564,8 @@ VOID afterLockAcquire(THREADID tid, ADDRINT lockAddr) {
     return;
   }
 
-  thread_local_data_t* tdata = static_cast<thread_local_data_t*>(PIN_GetThreadData(s_writeAddr, tid));
+  thread_local_data_t *tdata =
+      static_cast<thread_local_data_t *>(PIN_GetThreadData(s_writeAddr, tid));
   assert(tdata != NULL);
   assert(tdata->m_tid == tid);
   assert(tdata->activeAcqs >= 0);
@@ -612,7 +664,7 @@ VOID afterTryLock(THREADID tid, ADDRINT outcome) {
 //   waitForBackend(e);
 // }
 
-VOID beforeBasicBlock(THREADID tid, CONTEXT* ctxt, UINT32 insnCount) {
+VOID beforeBasicBlock(THREADID tid, CONTEXT *ctxt, UINT32 insnCount) {
   g_Lock.lock(tid);
   assert(tid >= 0);
   if (isIgnored(tid)) {
@@ -625,12 +677,12 @@ VOID beforeBasicBlock(THREADID tid, CONTEXT* ctxt, UINT32 insnCount) {
 
 // This is called whenever a thread is created in the system (including
 // pthread_create() calls and the main thread)
-VOID threadBegin(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v) {
+VOID threadBegin(THREADID tid, CONTEXT *ctxt, INT32 flags, VOID *v) {
   g_Lock.lock(tid);
   assert(tid >= 0);
 
   // Create a thread-local TLS key, start with default values
-  thread_local_data_t* tdata = new thread_local_data_t;
+  thread_local_data_t *tdata = new thread_local_data_t;
   tdata->m_tid = tid;
   BOOL ok = PIN_SetThreadData(s_writeAddr, tdata, tid);
   assert(ok);
@@ -646,7 +698,7 @@ VOID threadBegin(THREADID tid, CONTEXT* ctxt, INT32 flags, VOID* v) {
   g_Lock.unlock();
 }
 
-VOID threadEnd(THREADID tid, const CONTEXT* ctx, INT32 code, VOID* v) {
+VOID threadEnd(THREADID tid, const CONTEXT *ctx, INT32 code, VOID *v) {
   g_Lock.lock(tid);
   assert(tid >= 0);
   if (isIgnored(tid)) {
@@ -667,7 +719,7 @@ VOID threadEnd(THREADID tid, const CONTEXT* ctx, INT32 code, VOID* v) {
 // parent and the child threads. We can ignore pthread_exit() since threadEnd()
 // will create a region boundary.
 VOID beforePthreadCreate(THREADID tid,
-                         ADDRINT thread) {  // tid is the id of the parent thread
+                         ADDRINT thread) { // tid is the id of the parent thread
   g_Lock.lock(tid);
   assert(tid >= 0);
   if (isIgnored(tid)) {
@@ -726,157 +778,164 @@ VOID afterJoin(THREADID tid, ADDRINT thread) {
 }
 
 /** Runs before every function call.  See threadBegin() for more details. */
-VOID startFunctionCall(THREADID tid, CONTEXT* ctxt) { assert(tid >= 0); }
+VOID startFunctionCall(THREADID tid, CONTEXT *ctxt) { assert(tid >= 0); }
 
 // Currently unused systemcall hooks. Used to detect when threads are blocked,
 // which isn't really necessary with the single-queue model.
 
-VOID beforeSyscall(THREADID tid, CONTEXT* ctx, SYSCALL_STANDARD sys, VOID* unused) { assert(tid >= 0); }
+VOID beforeSyscall(THREADID tid, CONTEXT *ctx, SYSCALL_STANDARD sys,
+                   VOID *unused) {
+  assert(tid >= 0);
+}
 
-VOID afterSyscall(THREADID tid, CONTEXT* ctx, SYSCALL_STANDARD sys, VOID* unused) { assert(tid >= 0); }
+VOID afterSyscall(THREADID tid, CONTEXT *ctx, SYSCALL_STANDARD sys,
+                  VOID *unused) {
+  assert(tid >= 0);
+}
 
-VOID beforeSignal(THREADID tid, CONTEXT_CHANGE_REASON reason, const CONTEXT* from, CONTEXT* to, INT32 info, VOID* v) {
+VOID beforeSignal(THREADID tid, CONTEXT_CHANGE_REASON reason,
+                  const CONTEXT *from, CONTEXT *to, INT32 info, VOID *v) {
   assert(tid >= 0);
 }
 
 VOID checkEvent(Event e) {
   switch (e.m_eventType) {
-    case THREAD_BLOCKED:
-    case THREAD_UNBLOCKED: {
-      assert(false);
-      break;
-    }
-    case ROI_START:
-    case ROI_END:
-    case THREAD_START:
-    case THREAD_FINISH:
-    case MEMORY_READ:
-    case MEMORY_WRITE:
-    case MEMORY_ALLOC:
-    case MEMORY_FREE:
-    case BASIC_BLOCK:
-    case LOCK_ACQUIRE:
-    case ATOMIC_READ:
-    case ATOMIC_WRITE:
-    case LOCK_RELEASE:
-    case IGNORE_CONFLICTS_BEGIN:
-    case IGNORE_CONFLICTS_END:
-    case SERVER_ROI_START:
-    case SERVER_ROI_END:
-    case LOCK_ACQ_READ:
-    case LOCK_ACQ_WRITE:
-    case LOCK_REL_WRITE:
-    case THREAD_JOIN:
-    case THREAD_SPAWN: {
-      break;
-    }
-    case INVALID:
-    default: {
-      cerr << "*** Invalid event:" << e.toString() << " ***" << endl;
-      assert(false);
-    }
+  case THREAD_BLOCKED:
+  case THREAD_UNBLOCKED: {
+    assert(false);
+    break;
+  }
+  case ROI_START:
+  case ROI_END:
+  case THREAD_START:
+  case THREAD_FINISH:
+  case MEMORY_READ:
+  case MEMORY_WRITE:
+  case MEMORY_ALLOC:
+  case MEMORY_FREE:
+  case BASIC_BLOCK:
+  case LOCK_ACQUIRE:
+  case ATOMIC_READ:
+  case ATOMIC_WRITE:
+  case LOCK_RELEASE:
+  case IGNORE_CONFLICTS_BEGIN:
+  case IGNORE_CONFLICTS_END:
+  case SERVER_ROI_START:
+  case SERVER_ROI_END:
+  case LOCK_ACQ_READ:
+  case LOCK_ACQ_WRITE:
+  case LOCK_REL_WRITE:
+  case THREAD_JOIN:
+  case THREAD_SPAWN: {
+    break;
+  }
+  case INVALID:
+  default: {
+    cerr << "*** Invalid event:" << e.toString() << " ***" << endl;
+    assert(false);
+  }
   }
 }
 
 VOID trackEnqueueStats(Event e) {
   // Acquire lock to avoid data races, g_lock is already acquired
   switch (e.m_eventType) {
-    case ROI_START: {
-      g_enqRoiStart++;
-      break;
-    }
-    case ROI_END: {
-      g_enqRoiEnd++;
-      break;
-    }
-    case THREAD_START: {
-      g_enqThreadStarts++;
-      break;
-    }
-    case THREAD_FINISH: {
-      g_enqThreadEnds++;
-      break;
-    }
-    case MEMORY_READ: {
-      g_enqReads++;
-      g_enqMemoryEvents++;
-      break;
-    }
-    case MEMORY_WRITE: {
-      g_enqWrites++;
-      g_enqMemoryEvents++;
-      break;
-    }
-    case THREAD_BLOCKED: {
-      g_enqThreadBlocked++;
-      break;
-    }
-    case THREAD_UNBLOCKED: {
-      g_enqThreadUnblocked++;
-      break;
-    }
-    case BASIC_BLOCK: {
-      g_enqBBs++;
-      break;
-    }
-    case LOCK_ACQUIRE: {
-      g_enqLockAcquires++;
-      break;
-    }
-    case ATOMIC_READ: {
-      g_enqAtomicReads++;
-      break;
-    }
-    case ATOMIC_WRITE: {
-      g_enqAtomicWrites++;
-      break;
-    }
-    case LOCK_RELEASE: {
-      g_enqLockReleases++;
-      break;
-    }
-    case THREAD_JOIN: {
-      g_enqThreadJoins++;
-      break;
-    }
-    case THREAD_SPAWN: {
-      g_enqThreadSpawns++;
-      break;
-    }
-    case IGNORE_CONFLICTS_BEGIN: {
-      g_enqIgnoreConflictsBegins++;
-      break;
-    }
-    case IGNORE_CONFLICTS_END: {
-      g_enqIgnoreConflictsEnds++;
-      break;
-    }
-    case SERVER_ROI_START: {
-      g_enqServerRoiStarts++;
-      break;
-    }
-    case SERVER_ROI_END: {
-      g_enqServerRoiEnds++;
-      break;
-    }
-    case LOCK_ACQ_READ: {
-      g_enqLockAcqReads++;
-      break;
-    }
-    case LOCK_ACQ_WRITE: {
-      g_enqLockAcqWrites++;
-      break;
-    }
-    case LOCK_REL_WRITE: {
-      g_enqLockRelWrites++;
-      break;
-    }
-    default: {
-      assert(false);
-      // Do nothing
-    }
+  case ROI_START: {
+    g_enqRoiStart++;
+    break;
   }
-  g_enqEvents++;  // Count all events
+  case ROI_END: {
+    g_enqRoiEnd++;
+    break;
+  }
+  case THREAD_START: {
+    g_enqThreadStarts++;
+    break;
+  }
+  case THREAD_FINISH: {
+    g_enqThreadEnds++;
+    break;
+  }
+  case MEMORY_READ: {
+    g_enqReads++;
+    g_enqMemoryEvents++;
+    break;
+  }
+  case MEMORY_WRITE: {
+    g_enqWrites++;
+    g_enqMemoryEvents++;
+    break;
+  }
+  case THREAD_BLOCKED: {
+    g_enqThreadBlocked++;
+    break;
+  }
+  case THREAD_UNBLOCKED: {
+    g_enqThreadUnblocked++;
+    break;
+  }
+  case BASIC_BLOCK: {
+    g_enqBBs++;
+    break;
+  }
+  case LOCK_ACQUIRE: {
+    g_enqLockAcquires++;
+    break;
+  }
+  case ATOMIC_READ: {
+    g_enqAtomicReads++;
+    break;
+  }
+  case ATOMIC_WRITE: {
+    g_enqAtomicWrites++;
+    break;
+  }
+  case LOCK_RELEASE: {
+    g_enqLockReleases++;
+    break;
+  }
+  case THREAD_JOIN: {
+    g_enqThreadJoins++;
+    break;
+  }
+  case THREAD_SPAWN: {
+    g_enqThreadSpawns++;
+    break;
+  }
+  case IGNORE_CONFLICTS_BEGIN: {
+    g_enqIgnoreConflictsBegins++;
+    break;
+  }
+  case IGNORE_CONFLICTS_END: {
+    g_enqIgnoreConflictsEnds++;
+    break;
+  }
+  case SERVER_ROI_START: {
+    g_enqServerRoiStarts++;
+    break;
+  }
+  case SERVER_ROI_END: {
+    g_enqServerRoiEnds++;
+    break;
+  }
+  case LOCK_ACQ_READ: {
+    g_enqLockAcqReads++;
+    break;
+  }
+  case LOCK_ACQ_WRITE: {
+    g_enqLockAcqWrites++;
+    break;
+  }
+  case LOCK_REL_WRITE: {
+    g_enqLockRelWrites++;
+    break;
+  }
+  default: {
+    assert(false);
+    // Do nothing
+  }
+  }
+  g_enqEvents++; // Count all events
 }
 
 VOID addEvent(Event e) {
@@ -898,7 +957,7 @@ VOID addEvent(Event e) {
     }
     // The lock is acquired
     e.m_iid = ++insCount;
-    g_cbEventQ.push_back(e);  // Add at the end of the circular buffer
+    g_cbEventQ.push_back(e); // Add at the end of the circular buffer
     g_eventQLock.unlock();
 
     if (constants::WRITE_EVENT_FILE) {
@@ -926,19 +985,21 @@ VOID addEvent(Event e) {
 VOID waitForBackend(Event e) {
   if (lockstep) {
     // eventTrace.flush();
-    assert(e.m_tid != 1);  // IO thread
+    assert(e.m_tid != 1); // IO thread
     int fifoID = e.m_tid;
     if (!perThreadFifos[fifoID].good() || !perThreadFifos[fifoID].is_open()) {
       cout << "Thread id:" << fifoID << endl;
     }
     assert(perThreadFifos[fifoID].good());
     assert(perThreadFifos[fifoID].is_open());
-    string fifoName = string(getenv("PINTOOL_ROOT")) + "/" + perThreadFIFOPrefix + boost::lexical_cast<string>(fifoID);
+    string fifoName = string(getenv("PINTOOL_ROOT")) + "/" +
+                      perThreadFIFOPrefix + boost::lexical_cast<string>(fifoID);
     char buffer[2];
     if (constants::DEBUG_LOCKSTEP) {
-      cout << "[pintool] Pin thread " << e.m_tid << " is blocking "  // "from the per-thread fifo:" << fifoName
-           << " to receive notification from the backend, Event: " << g_enqEvents << " Event type:" << e.m_eventType
-           << endl;
+      cout << "[pintool] Pin thread " << e.m_tid
+           << " is blocking " // "from the per-thread fifo:" << fifoName
+           << " to receive notification from the backend, Event: "
+           << g_enqEvents << " Event type:" << e.m_eventType << endl;
     }
 
     // SB: If we are reading a single char, i.e., 8 bytes, we do not need byte
@@ -951,13 +1012,17 @@ VOID waitForBackend(Event e) {
       short number = (short)(low << 8 | hi);
 
       if (constants::DEBUG_LOCKSTEP) {
-        cout << "Thread:" << e.m_tid << " Buffer[0]:" << low << "    " << bitset<8>(low) << " Buffer[1]:" << hi
-             << "    " << bitset<8>(hi) << " Number after typecasting:" << number << endl;
+        cout << "Thread:" << e.m_tid << " Buffer[0]:" << low << "    "
+             << bitset<8>(low) << " Buffer[1]:" << hi << "    " << bitset<8>(hi)
+             << " Number after typecasting:" << number << endl;
 
-        cout << "[pintool] Pin thread " << e.m_tid << " received notification from the backend:" << number << endl;
+        cout << "[pintool] Pin thread " << e.m_tid
+             << " received notification from the backend:" << number << endl;
       }
       if (e.m_tid != number) {
-        cout << "Thread id:" << e.m_tid << " Notification received over the pipe:" << bitset<16>(number) << endl;
+        cout << "Thread id:" << e.m_tid
+             << " Notification received over the pipe:" << bitset<16>(number)
+             << endl;
       }
       assert(e.m_tid == number);
     }

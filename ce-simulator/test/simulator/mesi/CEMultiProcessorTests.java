@@ -568,8 +568,8 @@ public final class CEMultiProcessorTests {
 	// This is without AIM cache.
 	@Test
 	public void testMemoryAccesses1() {
-		// Processor<MESILine> proc0 = machine.getProc(P0);
-		// Processor<MESILine> proc1 = machine.getProc(P1);
+		Processor<MESILine> proc0 = machine.getProc(P0);
+		Processor<MESILine> proc1 = machine.getProc(P1);
 
 		machine.testCacheMemoryRead(P0, 80L, 2);
 
@@ -594,7 +594,7 @@ public final class CEMultiProcessorTests {
 	// This is without AIM cache.
 	@Test
 	public void testMemoryAccesses2() {
-		// Processor<MESILine> proc0 = machine.getProc(P0);
+		Processor<MESILine> proc0 = machine.getProc(P0);
 
 		machine.testCacheMemoryRead(P0, 80L, 2);
 		machine.testCacheMemoryRead(P0, 64L, 2);
@@ -612,7 +612,7 @@ public final class CEMultiProcessorTests {
 	// This is without AIM cache.
 	@Test
 	public void testMemoryAccesses3() {
-		// Processor<MESILine> proc0 = machine.getProc(P0);
+		Processor<MESILine> proc0 = machine.getProc(P0);
 
 		machine.testCacheMemoryWrite(P0, 80L, 2);
 		machine.testCacheMemoryWrite(P0, 64L, 2);

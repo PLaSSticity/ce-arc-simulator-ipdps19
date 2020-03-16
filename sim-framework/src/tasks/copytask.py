@@ -46,7 +46,7 @@ class CopyTask(Constants):
             cmd = "mkdir " + outputDir
             _, ssh_stdout, _ = ssh.exec_command(cmd)
 
-        cmd = ("scp -r " + options.getExpOutputDir() + Constants.FILE_SEP + " " + getpass.getuser()
-               + "@" + options.config.getResultsMachine() + ":" + options.getExpOutputDir() +
-               Constants.FILE_SEP + socket.gethostname())
+        cmd = ("scp -r " + options.getExpOutputDir() + Constants.FILE_SEP + " " +
+               getpass.getuser() + "@" + options.config.getResultsMachine() + ":" +
+               options.getExpOutputDir() + Constants.FILE_SEP + socket.gethostname())
         subprocess.Popen(cmd, shell=True)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <project basedir="." default="build" name="visersim">
 	<property environment="env" />
 	<property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse" />
@@ -81,20 +81,20 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="2g" output="test1-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/test1' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./test1-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 100000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/test1" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./test1-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 100000" />
 		</java>
 	</target>
 
@@ -102,25 +102,25 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="blackscholes-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/blackscholes-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./blackscholes-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--defer-write-backs-precise false' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--use-rfrs false' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 100000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/blackscholes-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./blackscholes-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--defer-write-backs-precise false" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--use-rfrs false" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 100000" />
 		</java>
 	</target>
 
@@ -128,25 +128,25 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="bodytrack-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/bodytrack-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./bodytrack-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--defer-write-backs-precise false' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--use-rfrs false' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 10000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/bodytrack-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./bodytrack-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--defer-write-backs-precise false" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--use-rfrs false" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 10000" />
 		</java>
 	</target>
 
@@ -154,23 +154,23 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="canneal-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/canneal-simsmall-8' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./canneal-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/canneal-simsmall-8" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./canneal-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 
@@ -178,23 +178,23 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="dedup-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/dedup-simsmall-8' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./dedup-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/dedup-simsmall-8" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./dedup-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 
@@ -202,18 +202,18 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="facesim-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/facesim-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./facesim-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check true' />
-			<arg line='--invalidate-untouched-lines-opt true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 10000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/facesim-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./facesim-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check true" />
+			<arg line="--invalidate-untouched-lines-opt true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 10000" />
 		</java>
 	</target>
 
@@ -221,18 +221,18 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="ferret-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/ferret-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./ferret-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check true' />
-			<arg line='--invalidate-untouched-lines-opt true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 10000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/ferret-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./ferret-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check true" />
+			<arg line="--invalidate-untouched-lines-opt true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 10000" />
 		</java>
 	</target>
 
@@ -240,25 +240,25 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="fluidanimate-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/fluidanimate-simdev' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./fluidanimate-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--defer-write-backs-precise false' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--use-rfrs false' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 10000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/fluidanimate-simdev" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./fluidanimate-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--defer-write-backs-precise false" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--use-rfrs false" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 10000" />
 		</java>
 	</target>
 
@@ -266,23 +266,23 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="raytrace-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/raytrace-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./raytrace-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 10000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/raytrace-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./raytrace-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 10000" />
 		</java>
 	</target>
 
@@ -290,23 +290,23 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="streamcluster-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/streamcluster-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./streamcluster-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/streamcluster-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./streamcluster-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 
@@ -314,23 +314,23 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="swaptions-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/swaptions-simsmall-n16' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./swaptions-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/swaptions-simsmall-n16" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./swaptions-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 
@@ -338,25 +338,25 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="vips-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/vips-simsmall' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./vips-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--defer-write-backs-precise true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--use-rfrs false' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/vips-simsmall" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./vips-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--defer-write-backs-precise true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--use-rfrs false" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 
@@ -364,25 +364,25 @@
 		<java classname="simulator.viser.ViserSim" fork="true" maxmemory="3g" output="x264-output.txt">
 			<classpath refid="visersim.classpath" />
 			<jvmarg value="-enableassertions" />
-			<arg line='--tosim-fifo ${env.VISER_TRACE}/x264-simdev' />
-			<arg line='--sim-mode viser' />
-			<arg line='--stats-file "./x264-stats.py"' />
-			<arg line='--cores 8' />
-			<arg line='--use-l2 true' />
-			<arg line='--always-invalidate-read-only-lines false' />
-			<arg line='--invalidate-written-lines-only-after-version-check true' />
-			<arg line='--update-written-lines-during-version-check false' />
-			<arg line='--invalidate-untouched-lines-opt false' />
-			<arg line='--special-invalid-state true' />
-			<arg line='--use-bloom-filter true' />
-			<arg line='--use-aim-cache true' />
-			<arg line='--defer-write-backs true' />
-			<arg line='--defer-write-backs-precise true' />
-			<arg line='--skip-validating-read-lines true' />
-			<arg line='--ignore-fetching-read-bits true' />
-			<arg line='--use-rfrs false' />
-			<arg line='--xasserts true' />
-			<arg line='--assert-period 1000000' />
+			<arg line="--tosim-fifo ${env.VISER_TRACE}/x264-simdev" />
+			<arg line="--sim-mode viser" />
+			<arg line="--stats-file "./x264-stats.py"" />
+			<arg line="--cores 8" />
+			<arg line="--use-l2 true" />
+			<arg line="--always-invalidate-read-only-lines false" />
+			<arg line="--invalidate-written-lines-only-after-version-check true" />
+			<arg line="--update-written-lines-during-version-check false" />
+			<arg line="--invalidate-untouched-lines-opt false" />
+			<arg line="--special-invalid-state true" />
+			<arg line="--use-bloom-filter true" />
+			<arg line="--use-aim-cache true" />
+			<arg line="--defer-write-backs true" />
+			<arg line="--defer-write-backs-precise true" />
+			<arg line="--skip-validating-read-lines true" />
+			<arg line="--ignore-fetching-read-bits true" />
+			<arg line="--use-rfrs false" />
+			<arg line="--xasserts true" />
+			<arg line="--assert-period 1000000" />
 		</java>
 	</target>
 

@@ -1,13 +1,13 @@
 import os
-import subprocess
 import time
+import subprocess
 
-import tasks.sniper
 from options import util
 from options.benchmarks import Benchmark
-from options.conflicts import Conflicts
-from options.constants import Constants
 from tasks.synctask import SyncTask
+from options.constants import Constants
+import tasks.sniper
+from options.benchmarks import Benchmark
 
 
 class RunTask(Constants):
@@ -321,8 +321,8 @@ class RunTask(Constants):
             cmdLine += " -lockstep 0"
 
         if backendSimPresent:
-            cmdLine += (
-                " -tosim-fifo " + RunTask.PINTOOL_ROOT + "/" + bench + "." + RunTask.FIFO_FRONTEND)
+            cmdLine += (" -tosim-fifo " + RunTask.PINTOOL_ROOT + "/" + bench + "." +
+                        RunTask.FIFO_FRONTEND)
 
         if options.confIndex >= 0:
             # do collision analysis
@@ -341,8 +341,8 @@ class RunTask(Constants):
             if bench == "httpd":
                 cmdLine += " -- " + RunTask.HTTPD_DEBUG_START
             elif bench == "mysqld":
-                cmdLine += (" -- " + RunTask.MYSQLD_START + RunTask.MYSQLD_CACHED_THREADS + str(
-                    options.cores) + RunTask.MYSQLD_INNODB_THREADS + str(options.cores))
+                cmdLine += (" -- " + RunTask.MYSQLD_START + RunTask.MYSQLD_CACHED_THREADS +
+                            str(options.cores) + RunTask.MYSQLD_INNODB_THREADS + str(options.cores))
             elif bench == "memcached":
                 cmdLine += (" -- " + RunTask.MEMCACHED_START + " -t " + str(options.cores))
 
@@ -397,8 +397,8 @@ class RunTask(Constants):
     @staticmethod
     def __startMesiSimulator(options, bench, size, trial, tool):
         cmdLine = RunTask.__addJVMArgs(options)
-        cmdLine += (RunTask.MESISIM_CLASSPATH + " --tosim-fifo " + bench + "." + RunTask.FIFO_PREFIX
-                    + tool + " --sim-mode baseline")
+        cmdLine += (RunTask.MESISIM_CLASSPATH + " --tosim-fifo " + bench + "." +
+                    RunTask.FIFO_PREFIX + tool + " --sim-mode baseline")
         cmdLine += RunTask.__addCommonSimulatorArgs(options, bench)
         # Pass whether the backend needs to execute in lockstep with the
         # Pintool
@@ -1375,8 +1375,8 @@ class RunTask(Constants):
         else:
             cmdLine += RunTask.RESTARTSIM_CLASSPATH
 
-        cmdLine += (
-            " --tosim-fifo " + bench + "." + RunTask.FIFO_PREFIX + tool + " --sim-mode viser")
+        cmdLine += (" --tosim-fifo " + bench + "." + RunTask.FIFO_PREFIX + tool +
+                    " --sim-mode viser")
         cmdLine += RunTask.__addCommonSimulatorArgs(options, bench)
         # Pass whether the backend needs to execute in lockstep with the
         # Pintool
@@ -2158,8 +2158,8 @@ class RunTask(Constants):
 
     @staticmethod
     def __isTerminated(options):
-        assert options.processPintool(), (
-            "Pintool is expected to be run" + "along with the simulators.")
+        assert options.processPintool(), ("Pintool is expected to be run" +
+                                          "along with the simulators.")
         for pinID in RunTask.pinIDsList:
             if pinID.poll() is None:
                 return False

@@ -27,28 +27,30 @@ along with RCDC-sim.  If not, see <http://www.gnu.org/licenses/>.
 
 using namespace std;
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
 
   if (argc < 3) {
-    cout << "[pipefork] Usage: " << argv[0] << " SOURCE DESTINATIONS..." << endl;
+    cout << "[pipefork] Usage: " << argv[0] << " SOURCE DESTINATIONS..."
+         << endl;
     return 1;
   }
 
-  const char* sourcePipe = argv[1];
+  const char *sourcePipe = argv[1];
 
   ifstream sourceFifo;
   sourceFifo.open(sourcePipe, ios::in | ios::binary);
   assert(sourceFifo.good());
 
-  vector<ofstream*> destFifos;
+  vector<ofstream *> destFifos;
   for (int i = 2; i < argc; i++) {
-    ofstream* dest = new ofstream;
+    ofstream *dest = new ofstream;
     dest->open(argv[i], ios::out | ios::binary);
     destFifos.push_back(dest);
   }
 
-  char buf[29 + 14]; // Should increase this for sending site tracking info under the lockstep execution
-  vector<ofstream*>::iterator os;
+  char buf[29 + 14]; // Should increase this for sending site tracking info
+                     // under the lockstep execution
+  vector<ofstream *>::iterator os;
 
   while (true) {
     // SB: http://www.cplusplus.com/reference/ios/ios/good/
@@ -68,8 +70,8 @@ int main(int argc, char** argv) {
     for (os = destFifos.begin(); os != destFifos.end(); os++) {
       assert((*os)->good());
       (*os)->write(&buf[0], bytesRead);
-      // SB: This is important to ensure event communication over pipes on a per-event basis and not in
-      // blocks of certain sizes
+      // SB: This is important to ensure event communication over pipes on a
+      // per-event basis and not in blocks of certain sizes
       (*os)->flush();
     }
 

@@ -1,11 +1,11 @@
-import os
 from math import floor, log10
+import os
 
 from options import merge
-from options.constants import Constants
 from options.merge import MergeType
 from result.jgraph import JGraph
 from result.resultset import ResultSet
+from options.constants import Constants
 
 
 class BarGraph(JGraph, Constants):
@@ -90,8 +90,8 @@ class BarGraph(JGraph, Constants):
         """Write jgraph strings for individual benchmarks."""
         fl_benchLabelPos = JGraph.INITIAL_PADDING
         fl_shadeStart = self.SHADE_START
-        fl_shadeInc = (
-            (self.SHADE_END - self.SHADE_START) / (len(self.options.getSimulatorsTuple())))
+        fl_shadeInc = ((self.SHADE_END - self.SHADE_START) /
+                       (len(self.options.getSimulatorsTuple())))
         b_printLabel = True
 
         for bench in self.options.getBenchTuple():

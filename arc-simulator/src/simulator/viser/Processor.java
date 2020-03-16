@@ -3730,11 +3730,18 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 	// The core just issues on command to the cache controller to flash clear
 	// lines, so this operation is for free.
 
-	// There could be L1 lines that have been read, but the fact is not transmitted to L2 lines
-	// because of no L1 eviction. This implies that the L1 line is read only, but the L2
-	// line is not (read and write encoding are both zero for the L2 line). For such cases, we need
-	// to skip invalidating the L2 line as well. In general, we want to avoid invalidating those L2
-	// lines for which the corresponding L1 lines were not invalidated.
+	// There could be L1 lines that have been read, but the fact is not
+	// transmitted to L2 lines
+	// because of
+	// no L1 eviction. This implies that the L1 line is read only, but the L2
+	// line is not (read and
+	// write encoding
+	// are both zero for the L2 line). For such cases, we need to skip
+	// invalidating the L2 line as
+	// well. In general,
+	// we want to avoid invalidating those L2 lines for which the corresponding
+	// L1 lines were not
+	// invalidated.
 	private void postCommitSelfInvalidateHelper(EventType type) {
 		sendDirtyValuesToLLC();
 		// Track L1 lines that were skipped, so that we can skip invalidating
@@ -3753,12 +3760,14 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 		nextEp = new Epoch(currentEp.getRegionId() + 1);
 
 		// We can assume parallelization while sending messages, and hence
-		// account for the slowest message in a batch
+		// account for the slowest
+		// message in a batch
 		// for estimating the cycle cost. But that is not the default for
 		// tracking execution cost.
 		double bandwidthBasedCost = 0;
 		// We consider writing back WAR-upgraded dirty lines to be streaming
-		// operations. So that is why, we add up all
+		// operations. So that is
+		// why, we add up all
 		// the bytes and compute network traffic in terms of flits.
 		int totalSizeInBytes = 0;
 
@@ -3778,7 +3787,8 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 					while (it.hasNext()) {
 						Line skip = it.next();
 						if (skip.lineAddress().get() == l.lineAddress().get()) {
-							// So the L1 line corresponding to this L2 line was not invalidated
+							// So the L1 line corresponding to this L2 line was
+							// not invalidated
 							found = true;
 							l1Line = skip;
 							it.remove();
@@ -3802,15 +3812,19 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 				if (l.isLineReadOnly(id)) {
 					assert l.getEpoch(id).equals(currentEp);
 
-					// Optimization: After a successful read validation, we know that read-only
-					// lines have valid values before the start of the next region, so we can
-					// avoid invalidating the line. This should allow more hits in the private
-					// caches.
+					// Optimization: After a successful read validation, we know
+					// that read-only
+					// lines have valid
+					// values before the start of the next region, so we can
+					// avoid invalidating the
+					// line. This should
+					// allow more hits in the private caches.
 					if (params.alwaysInvalidateReadOnlyLines()) {
 						l.invalidate();
 					} else {
 						// Need to clear read and write metadata if we are not
-						// going to invalidate the line
+						// going to invalidate
+						// the line
 						l.clearReadEncoding(id);
 						l.clearWriteEncoding(id);
 						l.setEpoch(id, nextEp);
@@ -3832,8 +3846,10 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 					// Need to *model* the write back the dirty bytes for
 					// WAR-upgraded lines
 					if (l.isWrittenAfterRead(id)) {
-						// Compute size of a message to LLC. We do not need to send the version, we
-						// can just increment it
+						// Compute size of a message to LLC. We do not need to
+						// send the version, we
+						// can just increment
+						// it
 						long writeEnc = l.getWriteEncoding(id);
 						int sizeInBytes = SystemConstants.TAG_BYTES;
 						if (!params.deferWriteBacks()) {
@@ -3845,7 +3861,8 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 								: SystemConstants.MEMORY_ACCESS;
 						stats.pc_ExecDrivenCycleCount.incr(cost);
 						updatePhaseExecDrivenCycleCost(ExecutionPhase.POST_COMMIT, cost);
-						// Count execution cycles but taking into account bandwidth
+						// Count execution cycles but taking into account
+						// bandwidth
 						bandwidthBasedCost += (sizeInBytes * SystemConstants.LLC_MULTIPLIER);
 						if (!llcHit) {
 							bandwidthBasedCost += (sizeInBytes * SystemConstants.MEM_MULTIPLIER);
@@ -3855,15 +3872,21 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 					if (params.invalidateWrittenLinesOnlyAfterVersionCheck()) {
 						long myVer = l.getVersion();
 						assert myVer < sharedVer;
-						// The line may have been read and written. In that case, read validation
-						// updates the version number in the private cache, but then writing back
-						// increases the version number in the LLC. So sharedVer should always be
+						// The line may have been read and written. In that
+						// case, read validation
+						// updates the version number in the private cache, but
+						// then writing back
+						// increases the version number in the LLC. So sharedVer
+						// should always be
 						// larger than myVer.
-						// TODO: opt opportunities: all the offsets of the line have been touched
+						// TODO: opt opportunities: all the offsets of the line
+						// have been touched
 						if (myVer == sharedVer - 1
-								// myVer values may have been updated during read validation
+								// myVer values may have been updated during
+								// read validation
 								&& !l.isThereAConcurrentRemoteWrite()) {
-							// Need not invalidate, since there has been no concurrent write
+							// Need not invalidate, since there has been no
+							// concurrent write
 							l.clearReadEncoding(id);
 							l.clearWriteEncoding(id);
 							l.setVersion(sharedVer); // Update the version
@@ -3900,10 +3923,16 @@ public class Processor<Line extends ViserLine> implements CacheCallbacks<Line> {
 								stats.pc_TCCCycleCount32K.incr(cost);
 								stats.pc_TCCCycleCount64K.incr(cost);
 							} else {
-								// A written line is now being invalidated, this requires that we
-								// should write back the data and remove the line from the
-								// per-core deferred set if the line was deferred. The line
-								// should not be deferred and has already been written back.
+								// A written line is now being invalidated, this
+								// requires that we
+								// should
+								// write back the data and remove the line from
+								// the per-core
+								// deferred set if the
+								// line was deferred.
+								// The line should not be deferred and has
+								// already been written
+								// back.
 								l.invalidate();
 							}
 						}

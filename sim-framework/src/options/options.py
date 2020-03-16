@@ -1,7 +1,6 @@
-from parser.config import Config
-
 from options import util
 from options.constants import Constants
+from parser.config import Config
 
 
 class Options(Constants):

@@ -9,7 +9,7 @@ import com.google.common.hash.Hashing;
 public final class BloomFilter {
 
 	private static final int NUM_BITS = 112;
-	public static final int NUM_BYTES = NUM_BITS /  SystemConstants.BITS_IN_BYTE;
+	public static final int NUM_BYTES = NUM_BITS / SystemConstants.BITS_IN_BYTE;
 
 	private final BitSet filter = new BitSet(NUM_BITS); // number of bits
 
@@ -21,39 +21,43 @@ public final class BloomFilter {
 	// network usage of fluidanimate, and helps the geomean slightly.
 	private static final boolean useJavaHash = false;
 	private static final boolean useMurmur3_32 = true;
-	//private static final boolean useMurmur3_128 = false;
+
+	// private static final boolean useMurmur3_128 = false;
 	public void clear() {
 		filter.clear();
 	}
 
 	// We possibly need not bother with negative hashcodes
 	// RZ: I encountered a negative hashcode with raytrace with simsmall.
-/*	   Exception in thread "main" java.lang.IndexOutOfBoundsException: bitIndex < 0: -16
-	     at java.util.BitSet.set(BitSet.java:436)
-	   	 at simulator.viser.BloomFilter.setBit(BloomFilter.java:--)
-	 	 at simulator.viser.BloomFilter.add(BloomFilter.java:--)
-	     ...
+	/*
+	 * Exception in thread "main" java.lang.IndexOutOfBoundsException: bitIndex < 0: -16 at
+	 * java.util.BitSet.set(BitSet.java:436) at
+	 * simulator.viser.BloomFilter.setBit(BloomFilter.java:--) at
+	 * simulator.viser.BloomFilter.add(BloomFilter.java:--) ...
 	 */
 	public void add(long lineAddress) {
 		int bitPos;
 		if (useJavaHash) {
 			bitPos = getJavaHashBit(lineAddress);
 			if (bitPos < 0) {
-				System.out.println("Negative hashcode:" + bitPos + " from line address:" + lineAddress);
+				System.out.println(
+						"Negative hashcode:" + bitPos + " from line address:" + lineAddress);
 			}
 			setBit(bitPos);
 		}
 		if (useMurmur3_32) {
 			bitPos = getMurmur3_32_Bit(lineAddress);
 			if (bitPos < 0) {
-				System.out.println("Negative hashcode:" + bitPos + " from line address:" + lineAddress);
+				System.out.println(
+						"Negative hashcode:" + bitPos + " from line address:" + lineAddress);
 			}
 			setBit(bitPos);
 		}
 		if (/* useMurmur3_128 || */ ViserSim.useTwoBloomFuncs()) {
 			bitPos = getMurmur3_128_Bit(lineAddress);
 			if (bitPos < 0) {
-				System.out.println("Negative hashcode:" + bitPos + " from line address:" + lineAddress);
+				System.out.println(
+						"Negative hashcode:" + bitPos + " from line address:" + lineAddress);
 			}
 			setBit(bitPos);
 		}

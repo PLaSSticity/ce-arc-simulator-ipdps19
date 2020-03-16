@@ -37,9 +37,9 @@ public class BitTwiddle {
 		}
 		return pos;
 	}
-	
+
 	// http://stackoverflow.com/questions/3305059/how-do-you-calculate-log-base-2-in-java-for-integers
 	public static int log(long x, int base) {
-	    return (int) (Math.log(x) / (Math.log(base) + 1e-10) );
+		return (int) (Math.log(x) / (Math.log(base) + 1e-10));
 	}
 }

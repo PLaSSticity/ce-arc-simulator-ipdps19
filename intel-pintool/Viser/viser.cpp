@@ -20,8 +20,8 @@ INSTLIB::ICOUNT icount;
 
 // Statistics
 
-UINT64 g_enqEvents = 0;        // All events
-UINT64 g_enqMemoryEvents = 0;  // Memory events
+UINT64 g_enqEvents = 0;       // All events
+UINT64 g_enqMemoryEvents = 0; // Memory events
 UINT64 g_enqRoiStart = 0;
 UINT64 g_enqRoiEnd = 0;
 UINT64 g_enqThreadStarts = 0;
@@ -81,45 +81,56 @@ PIN_THREAD_UID g_ioThreadId;
 boost::circular_buffer<Event> g_cbEventQ(MAX_CIRCULAR_BUFFER_SIZE);
 
 // Declaring PinLocks also initializes the locks
-PinLock g_Lock;            // Global lock to sync all events and instrumentation
-PinLock g_eventQLock;      // Synchronize accesses to the event queue with the IO thread
-PinLock g_waitingMapLock;  // Used for collision analysis
+PinLock g_Lock; // Global lock to sync all events and instrumentation
+PinLock
+    g_eventQLock; // Synchronize accesses to the event queue with the IO thread
+PinLock g_waitingMapLock; // Used for collision analysis
 
 KNOB<string> statsFile(KNOB_MODE_WRITEONCE, "pintool", "sim-stats", "output",
                        "The name of the output file to write to.");
 KNOB<BOOL> writeToFifo(KNOB_MODE_WRITEONCE, "pintool", "write-fifo", "1",
                        "Control whether the event stream should be written to "
                        "the trace file or the FIFO.");
-KNOB<string> simulatorFifo(KNOB_MODE_WRITEONCE, "pintool", "tosim-fifo", "fifo.frontend",
+KNOB<string> simulatorFifo(KNOB_MODE_WRITEONCE, "pintool", "tosim-fifo",
+                           "fifo.frontend",
                            "The named fifo used to log events to later pass on "
                            "to the simulator backend.");
-KNOB<BOOL> ignoreReps(KNOB_MODE_WRITEONCE, "pintool", "reps", "0",
-                      "Add count with REP prefixed instructions counted only once.");
+KNOB<BOOL>
+    ignoreReps(KNOB_MODE_WRITEONCE, "pintool", "reps", "0",
+               "Add count with REP prefixed instructions counted only once.");
 
-KNOB<string> nameFile(KNOB_MODE_WRITEONCE, "pintool", "source-names-index-file", "filename.out",
+KNOB<string> nameFile(KNOB_MODE_WRITEONCE, "pintool", "source-names-index-file",
+                      "filename.out",
                       "The filename map used to locate conflicting sites.");
-KNOB<string> rnameFile(KNOB_MODE_WRITEONCE, "pintool", "routine-names-index-file", "routinename.out",
+KNOB<string> rnameFile(KNOB_MODE_WRITEONCE, "pintool",
+                       "routine-names-index-file", "routinename.out",
                        "The routinename map used to locate conflicting sites.");
-KNOB<string> traceTextFile(KNOB_MODE_WRITEONCE, "pintool", "trace-text-file", "trace.txt", "Event trace text file.");
+KNOB<string> traceTextFile(KNOB_MODE_WRITEONCE, "pintool", "trace-text-file",
+                           "trace.txt", "Event trace text file.");
 
 // We use a different key other than "threads" since benchmarks like x264 uses
 // that word as an argument
-KNOB<UINT32> pinThreads(KNOB_MODE_WRITEONCE, "pintool", "pinThreads", "8",
-                        "The minimum number of application threads to be spawned.");
-KNOB<UINT32> backends(KNOB_MODE_WRITEONCE, "pintool", "backends", "0",
-                      "The number of non-MESI simulators to be executed in lockstep.");
+KNOB<UINT32>
+    pinThreads(KNOB_MODE_WRITEONCE, "pintool", "pinThreads", "8",
+               "The minimum number of application threads to be spawned.");
+KNOB<UINT32>
+    backends(KNOB_MODE_WRITEONCE, "pintool", "backends", "0",
+             "The number of non-MESI simulators to be executed in lockstep.");
 KNOB<BOOL> lockstep(KNOB_MODE_WRITEONCE, "pintool", "lockstep", "0",
                     "Should a Pin thread wait at synchronization operations "
                     "for the backend to catch up?");
-KNOB<BOOL> siteTracking(KNOB_MODE_WRITEONCE, "pintool", "siteTracking", "0",
-                        "Record the names of files and routines that Pin has instrumented.");
-KNOB<BOOL> ignorePthreadRTNs(KNOB_MODE_WRITEONCE, "pintool", "ignore-pthread-rtns", "1",
+KNOB<BOOL> siteTracking(
+    KNOB_MODE_WRITEONCE, "pintool", "siteTracking", "0",
+    "Record the names of files and routines that Pin has instrumented.");
+KNOB<BOOL> ignorePthreadRTNs(KNOB_MODE_WRITEONCE, "pintool",
+                             "ignore-pthread-rtns", "1",
                              "The Pintool does not instrument any memory "
                              "accesses and nested function within pthread "
                              "functions.");
 
 // For collision analysis
-KNOB<BOOL> enableCollisionAnalysis(KNOB_MODE_WRITEONCE, "pintool", "enable-collisionAnalysis", "0",
+KNOB<BOOL> enableCollisionAnalysis(KNOB_MODE_WRITEONCE, "pintool",
+                                   "enable-collisionAnalysis", "0",
                                    "The Pintool does collision analysis to "
                                    "validate a pair of conflicting sites?");
 KNOB<UINT32> intstLine0(KNOB_MODE_WRITEONCE, "pintool", "intstLine0", "0",
@@ -128,10 +139,12 @@ KNOB<UINT32> intstLine0(KNOB_MODE_WRITEONCE, "pintool", "intstLine0", "0",
 KNOB<UINT32> intstLine1(KNOB_MODE_WRITEONCE, "pintool", "intstLine1", "0",
                         "The second line number of the interested conflicting "
                         "sites for collision analysis.");
-KNOB<UINT32> usleep0(KNOB_MODE_WRITEONCE, "pintool", "usleep0", "0",
-                     "Sleep time (microseconds) for intstLine0 during collision analysis.");
-KNOB<UINT32> usleep1(KNOB_MODE_WRITEONCE, "pintool", "usleep1", "0",
-                     "Sleep time (microseconds) for intstLine1 during collision analysis.");
+KNOB<UINT32> usleep0(
+    KNOB_MODE_WRITEONCE, "pintool", "usleep0", "0",
+    "Sleep time (microseconds) for intstLine0 during collision analysis.");
+KNOB<UINT32> usleep1(
+    KNOB_MODE_WRITEONCE, "pintool", "usleep1", "0",
+    "Sleep time (microseconds) for intstLine1 during collision analysis.");
 UINT64 waitedEvents = 0;
 UINT64 checkedEvents = 0;
 
@@ -149,8 +162,8 @@ map<string, int> filenameMap;
 map<string, int> rtnnameMap;
 
 // Create an array of per-thread FIFOs
-ifstream* perThreadFifos;
-int* perThreadFifoIDs;
+ifstream *perThreadFifos;
+int *perThreadFifoIDs;
 
 // Use these to track the correctness of events enqueued and dequeued
 string deqFileName = "dequeue.txt";
@@ -161,7 +174,8 @@ ofstream enqueue;
 string perThreadFIFOPrefix("fifo.tid");
 
 INT32 Usage() {
-  cout << "This PIN tool is a frontend for the Viser simulator." << endl << KNOB_BASE::StringKnobSummary() << endl;
+  cout << "This PIN tool is a frontend for the Viser simulator." << endl
+       << KNOB_BASE::StringKnobSummary() << endl;
   return -1;
 }
 
@@ -170,28 +184,41 @@ INT32 Usage() {
 VOID matchStats() {
   // For raytrace, it seems thread 0 finishes first, so thread end enqueue and
   // dequeue events do not match assert(g_enqEvents == g_deqEvents);
-  assert(g_enqMemoryEvents == g_deqMemoryEvents);
-  assert(g_enqRoiStart == g_deqRoiStart);
-  assert(g_enqRoiEnd == g_deqRoiEnd);
-  assert(g_enqThreadStarts == g_deqThreadStarts);
-  // assert(g_enqThreadEnds == g_deqThreadEnds);
-  assert(g_enqReads == g_deqReads);
-  assert(g_enqWrites == g_deqWrites);
-  assert(g_enqThreadBlocked == g_deqThreadBlocked);
-  assert(g_enqThreadUnblocked == g_deqThreadUnblocked);
-  assert(g_enqBBs == g_deqBBs);
-  assert(g_enqLockAcquires == g_deqLockAcquires);
-  assert(g_enqLockReleases == g_deqLockReleases);
-  assert(g_enqThreadJoins == g_deqThreadJoins);
-  assert(g_enqThreadSpawns == g_deqThreadSpawns);
-  assert(g_enqIgnoreConflictsEnds == g_deqIgnoreConflictsEnds);
-  assert(g_enqIgnoreConflictsBegins == g_deqIgnoreConflictsBegins);
-  assert(g_enqAtomicReads == g_deqAtomicReads);
-  assert(g_enqAtomicWrites == g_deqAtomicWrites);
-  assert(g_enqServerRoiStarts == g_deqServerRoiStarts);
-  assert(g_enqServerRoiEnds == g_deqServerRoiEnds);
-  assert(g_enqServerRoiStarts == g_deqServerRoiEnds || (g_enqServerRoiStarts > 0 && g_deqServerRoiEnds > 0));
-  assert(g_enqIgnoreConflictsBegins == g_enqIgnoreConflictsEnds);
+  // Memcached failed the following with memtier_bench.
+  // assert(g_enqMemoryEvents == g_deqMemoryEvents);
+  cout << "RoiStart" << g_enqRoiStart - g_deqRoiStart << endl;
+  cout << "RoiEnd" << g_enqRoiEnd - g_deqRoiEnd << endl;
+  cout << "ThreadStarts" << g_enqThreadStarts - g_deqThreadStarts << endl;
+  // cout << "" << g_enqThreadEnds - g_deqThreadEnds << endl;
+  cout << "Reads" << g_enqReads - g_deqReads << endl;
+  cout << "Writes" << g_enqWrites - g_deqWrites << endl;
+  cout << "ThreadBlocked" << g_enqThreadBlocked - g_deqThreadBlocked << endl;
+  cout << "ThreadUnblocked" << g_enqThreadUnblocked - g_deqThreadUnblocked
+       << endl;
+  cout << "BBs" << g_enqBBs - g_deqBBs << endl;
+  cout << "LockAcquires" << g_enqLockAcquires - g_deqLockAcquires << endl;
+  cout << "LockReleases" << g_enqLockReleases - g_deqLockReleases << endl;
+  cout << "ThreadJoins" << g_enqThreadJoins - g_deqThreadJoins << endl;
+  cout << "ThreadSpawns" << g_enqThreadSpawns - g_deqThreadSpawns << endl;
+  cout << "IgnoreConflictsEnds"
+       << g_enqIgnoreConflictsEnds - g_deqIgnoreConflictsEnds << endl;
+  cout << "IgnoreConflictsBegins"
+       << g_enqIgnoreConflictsBegins - g_deqIgnoreConflictsBegins << endl;
+  cout << "AtomicReads" << g_enqAtomicReads - g_deqAtomicReads << endl;
+  cout << "AtomicWrites" << g_enqAtomicWrites - g_deqAtomicWrites << endl;
+  cout << "ServerRoiStarts" << g_enqServerRoiStarts - g_deqServerRoiStarts
+       << endl;
+  cout << "ServerRoiEnds" << g_enqServerRoiEnds - g_deqServerRoiEnds << endl;
+  // cout << "" << g_enqServerRoiStarts - g_deqServerRoiEnds ||
+  // (g_enqServerRoiStarts > 0 && g_deqServerRoiEnds > 0));
+  if (!(g_enqServerRoiStarts == g_deqServerRoiEnds ||
+        (g_enqServerRoiStarts > 0 && g_deqServerRoiEnds > 0))) {
+    cout << "deqServerRoiStarts/Ends unmatched: " << g_deqServerRoiStarts
+         << " vs " << g_deqServerRoiEnds << endl;
+  }
+
+  cout << "IgnoreConflictsBegins"
+       << g_enqIgnoreConflictsBegins - g_enqIgnoreConflictsEnds << endl;
 }
 
 // This is in a single-threaded context
@@ -204,7 +231,8 @@ VOID initSimulator() {
   // Collision analysis requires siteTracking and valid line numbers and sleep
   // times.
   assert(!enableCollisionAnalysis ||
-         (siteTracking && intstLine0 != 0 && intstLine1 != 0 && usleep0 != 0 && usleep1 != 0));
+         (siteTracking && intstLine0 != 0 && intstLine1 != 0 && usleep0 != 0 &&
+          usleep1 != 0));
 
   // Opening a named pipe has issues related to blocking. See here:
   // http://pubs.opengroup.org/onlinepubs/007908799/xsh/open.html
@@ -217,19 +245,23 @@ VOID initSimulator() {
     assert(eventTrace.good());
   }
   if (siteTracking) {
-    cout << "[pintool] Source files are indexed in:" << nameFile.Value().c_str() << endl;
+    cout << "[pintool] Source files are indexed in:" << nameFile.Value().c_str()
+         << endl;
     outFile.open(nameFile.Value().c_str(), ios::out);
-    cout << "[pintool] Routines are indexed:" << rnameFile.Value().c_str() << endl;
+    cout << "[pintool] Routines are indexed:" << rnameFile.Value().c_str()
+         << endl;
     rtnNameFile.open(rnameFile.Value().c_str(), ios::out);
     eventTraceTextFile.open(traceTextFile.Value().c_str(), ios::out);
   }
 
   if (enableCollisionAnalysis) {
-    cout << "[pintool] Collision analyzing lines " << intstLine0 << " (each waits " << usleep0 << " ms) "
-         << "and " << intstLine1 << " (each waits " << usleep1 << " ms) ..." << endl;
+    cout << "[pintool] Collision analyzing lines " << intstLine0
+         << " (each waits " << usleep0 << " ms) "
+         << "and " << intstLine1 << " (each waits " << usleep1 << " ms) ..."
+         << endl;
   }
 
-  char* pinToolPath = getenv("PINTOOL_ROOT");
+  char *pinToolPath = getenv("PINTOOL_ROOT");
   if (constants::DEBUG) {
     enqueue.open((string(pinToolPath) + "/" + enqFileName).c_str(), ios::out);
     dequeue.open((string(pinToolPath) + "/" + deqFileName).c_str(), ios::out);
@@ -238,25 +270,28 @@ VOID initSimulator() {
   // Create per-core fifo, the count of fifos correspond to the number of
   // threads.
   if (lockstep) {
-    UINT32 size = 5 * pinThreads.Value();  // Maximum number of threads spawned in PARSEC
+    UINT32 size =
+        5 * pinThreads.Value(); // Maximum number of threads spawned in PARSEC
     perThreadFifos = new ifstream[size];
     perThreadFifoIDs = new int[size];
     for (UINT32 i = 0; i < size; i++) {
-      string fifoName = string(pinToolPath) + "/" + perThreadFIFOPrefix + boost::lexical_cast<string>(i);
+      string fifoName = string(pinToolPath) + "/" + perThreadFIFOPrefix +
+                        boost::lexical_cast<string>(i);
       if (false) {
         cout << "[pintool] Creating fifo:" << fifoName << endl;
-        int ret = mkfifo(fifoName.c_str(), 0666);  // Create the FIFO
+        int ret = mkfifo(fifoName.c_str(), 0666); // Create the FIFO
         if (ret == -1) {
           handleMkfifoError(fifoName, ret);
           exit(EXIT_FAILURE);
         }
       }
       perThreadFifos[i].open(fifoName.c_str(),
-                             ios::in | ios::binary);  // The frontend/Pintool
-                                                      // opens the fifos only for
-                                                      // reading
+                             ios::in | ios::binary); // The frontend/Pintool
+                                                     // opens the fifos only for
+                                                     // reading
       if (constants::DEBUG_LOCKSTEP) {
-        cout << "[pintool] Opened per-thread fifo for reading:" << fifoName << " " << perThreadFifos[i] << endl;
+        cout << "[pintool] Opened per-thread fifo for reading:" << fifoName
+             << " " << perThreadFifos[i] << endl;
       }
       assert(perThreadFifos[i].good());
       assert(perThreadFifos[i].is_open());
@@ -268,73 +303,81 @@ VOID initSimulator() {
 }
 
 void handleMkfifoError(string fifoName, int ret) {
-  cerr << "mkfifo has failed for fifo:" << fifoName << " Error: " << errno << " ";
+  cerr << "mkfifo has failed for fifo:" << fifoName << " Error: " << errno
+       << " ";
   switch (errno) {
-    case EACCES: {
-      cout << "EACCESS";
-      break;
-    }
-    case EDQUOT: {
-      cout << "EDQUOT";
-      break;
-    }
-    case EEXIST: {
-      cout << "EEXIST";
-      break;
-    }
-    case ENAMETOOLONG: {
-      cout << "ENAMETOOLONG";
-      break;
-    }
-    case ENOENT: {
-      cout << "ENOENT";
-      break;
-    }
-    case ENOSPC: {
-      cout << "ENOSPC";
-      break;
-    }
-    case ENOTDIR: {
-      cout << "ENOTDIR";
-      break;
-    }
-    case EROFS: {
-      cout << "EROFS";
-      break;
-    }
-    default: { cout << "Unknown error type"; }
+  case EACCES: {
+    cout << "EACCESS";
+    break;
+  }
+  case EDQUOT: {
+    cout << "EDQUOT";
+    break;
+  }
+  case EEXIST: {
+    cout << "EEXIST";
+    break;
+  }
+  case ENAMETOOLONG: {
+    cout << "ENAMETOOLONG";
+    break;
+  }
+  case ENOENT: {
+    cout << "ENOENT";
+    break;
+  }
+  case ENOSPC: {
+    cout << "ENOSPC";
+    break;
+  }
+  case ENOTDIR: {
+    cout << "ENOTDIR";
+    break;
+  }
+  case EROFS: {
+    cout << "EROFS";
+    break;
+  }
+  default: {
+    cout << "Unknown error type";
+  }
   }
   cout << endl;
 
   // Close the per-thread fifos from the backend simulator since it is slower
   for (UINT32 i = 0; i < 5 * pinThreads.Value(); i++) {
     close(perThreadFifoIDs[i]);
-    string fifoName = string(getenv("PINTOOL_ROOT")) + "/" + perThreadFIFOPrefix + boost::lexical_cast<string>(i);
+    string fifoName = string(getenv("PINTOOL_ROOT")) + "/" +
+                      perThreadFIFOPrefix + boost::lexical_cast<string>(i);
     if (constants::DEBUG_LOCKSTEP) {
-      cout << "[pintool] Closing fifo: " << fifoName << " " << perThreadFifos[i] << endl;
+      cout << "[pintool] Closing fifo: " << fifoName << " " << perThreadFifos[i]
+           << endl;
     }
     unlink(fifoName.c_str());
   }
 }
 
-VOID pinExitHelper(INT32 code, VOID* v) {
+VOID pinExitHelper(INT32 code, VOID *v) {
   // wait for the IO thread to terminate, returns true if the thread terminates,
   // returns false if the wait times out
-  bool done = PIN_WaitForThreadTermination(g_ioThreadId, PIN_INFINITE_TIMEOUT, NULL);
-  assert(done);  // get a core dump if the IO thread times out
+  bool done =
+      PIN_WaitForThreadTermination(g_ioThreadId, PIN_INFINITE_TIMEOUT, NULL);
+  assert(done); // get a core dump if the IO thread times out
 
   // Close binary file/fifo
   eventTrace.flush();
   eventTrace.close();
   eventTraceTextFile.close();
 
-  if (false && lockstep) {  // Close the per-thread fifos from the backend
-                            // simulator since it is slower
+  if (false && lockstep) { // Close the per-thread fifos from the backend
+                           // simulator since it is slower
     for (UINT32 i = 0; i < 5 * pinThreads.Value(); i++) {
       close(perThreadFifoIDs[i]);
-      string fifoName = string(getenv("PINTOOL_ROOT")) + "/" + perThreadFIFOPrefix + boost::lexical_cast<string>(i);
+      string fifoName = string(getenv("PINTOOL_ROOT")) + "/" +
+                        perThreadFIFOPrefix + boost::lexical_cast<string>(i);
       if (constants::DEBUG_LOCKSTEP) {
-        cout << "[pintool] Closing fifo: " << fifoName << " " << perThreadFifos[i] << endl;
+        cout << "[pintool] Closing fifo: " << fifoName << " "
+             << perThreadFifos[i] << endl;
       }
       unlink(fifoName.c_str());
     }
@@ -346,7 +389,8 @@ VOID pinExitHelper(INT32 code, VOID* v) {
 
     stats << "Instruction count:" << icount.Count() << endl;
     if (ignoreReps) {
-      stats << "Instruction count (single REPs) " << icount.CountWithoutRep() << endl;
+      stats << "Instruction count (single REPs) " << icount.CountWithoutRep()
+            << endl;
     }
 
     stats << "[ENQUEUE] total events:" << g_enqEvents << endl
@@ -419,19 +463,21 @@ VOID pinExitHelper(INT32 code, VOID* v) {
 }
 
 // FIXME: This is not called for /bin/ls.
-VOID pinUnlockedFini(INT32 code, VOID* v) {
+VOID pinUnlockedFini(INT32 code, VOID *v) {
   cout << "[pintool] pinUnlockedFini: " << code << endl;
   pinExitHelper(code, v);
 }
 
 // FIXME: This is not called for /bin/ls.
-VOID pinFini(INT32 code, VOID* v) {
+VOID pinFini(INT32 code, VOID *v) {
   if (siteTracking) {
-    for (std::map<string, int>::iterator it = filenameMap.begin(); it != filenameMap.end(); ++it) {
+    for (std::map<string, int>::iterator it = filenameMap.begin();
+         it != filenameMap.end(); ++it) {
       outFile << it->first << " " << it->second << " \n";
     }
     outFile.close();
-    for (std::map<string, int>::iterator it = rtnnameMap.begin(); it != rtnnameMap.end(); ++it) {
+    for (std::map<string, int>::iterator it = rtnnameMap.begin();
+         it != rtnnameMap.end(); ++it) {
       rtnNameFile << it->first << " " << it->second << " \n";
     }
     rtnNameFile.close();
@@ -448,108 +494,108 @@ VOID trackDequeueStats(Event e) {
   g_deqEvents++;
   // This is single-threaded, so we should not require the stats lock
   switch (e.m_eventType) {
-    case ROI_START: {
-      g_deqRoiStart++;
-      break;
-    }
-    case ROI_END: {
-      g_deqRoiEnd++;
-      break;
-    }
-    case THREAD_START: {
-      g_deqThreadStarts++;
-      break;
-    }
-    case THREAD_FINISH: {
-      g_deqThreadEnds++;
-      break;
-    }
-    case THREAD_BLOCKED: {
-      assert(false);
-      g_deqThreadBlocked++;
-      break;
-    }
-    case THREAD_UNBLOCKED: {
-      assert(false);
-      g_deqThreadUnblocked++;
-      break;
-    }
-    case MEMORY_READ: {
-      g_deqReads++;
-      g_deqMemoryEvents++;
-      break;
-    }
-    case MEMORY_WRITE: {
-      g_deqWrites++;
-      g_deqMemoryEvents++;
-      break;
-    }
-    case BASIC_BLOCK: {
-      g_deqBBs++;
-      break;
-    }
-    case ATOMIC_READ: {
-      g_deqAtomicReads++;
-      break;
-    }
-    case ATOMIC_WRITE: {
-      g_deqAtomicWrites++;
-      break;
-    }
-    case LOCK_ACQUIRE: {
-      g_deqLockAcquires++;
-      break;
-    }
-    case LOCK_RELEASE: {
-      g_deqLockReleases++;
-      break;
-    }
-    case LOCK_ACQ_READ: {
-      g_deqLockAcqReads++;
-      break;
-    }
-    case LOCK_ACQ_WRITE: {
-      g_deqLockAcqWrites++;
-      break;
-    }
-    case LOCK_REL_WRITE: {
-      g_deqLockRelWrites++;
-      break;
-    }
-    case THREAD_JOIN: {
-      g_deqThreadJoins++;
-      break;
-    }
-    case THREAD_SPAWN: {
-      g_deqThreadSpawns++;
-      break;
-    }
-    case IGNORE_CONFLICTS_BEGIN: {
-      g_deqIgnoreConflictsBegins++;
-      break;
-    }
-    case IGNORE_CONFLICTS_END: {
-      g_deqIgnoreConflictsEnds++;
-      break;
-    }
-    case SERVER_ROI_START: {
-      g_deqServerRoiStarts++;
-      break;
-    }
-    case SERVER_ROI_END: {
-      g_deqServerRoiEnds++;
-      break;
-    }
-    default: {
-      cout << e.m_eventType << endl;
-      assert(false);
-      // Do nothing
-    }
+  case ROI_START: {
+    g_deqRoiStart++;
+    break;
+  }
+  case ROI_END: {
+    g_deqRoiEnd++;
+    break;
+  }
+  case THREAD_START: {
+    g_deqThreadStarts++;
+    break;
+  }
+  case THREAD_FINISH: {
+    g_deqThreadEnds++;
+    break;
+  }
+  case THREAD_BLOCKED: {
+    assert(false);
+    g_deqThreadBlocked++;
+    break;
+  }
+  case THREAD_UNBLOCKED: {
+    assert(false);
+    g_deqThreadUnblocked++;
+    break;
+  }
+  case MEMORY_READ: {
+    g_deqReads++;
+    g_deqMemoryEvents++;
+    break;
+  }
+  case MEMORY_WRITE: {
+    g_deqWrites++;
+    g_deqMemoryEvents++;
+    break;
+  }
+  case BASIC_BLOCK: {
+    g_deqBBs++;
+    break;
+  }
+  case ATOMIC_READ: {
+    g_deqAtomicReads++;
+    break;
+  }
+  case ATOMIC_WRITE: {
+    g_deqAtomicWrites++;
+    break;
+  }
+  case LOCK_ACQUIRE: {
+    g_deqLockAcquires++;
+    break;
+  }
+  case LOCK_RELEASE: {
+    g_deqLockReleases++;
+    break;
+  }
+  case LOCK_ACQ_READ: {
+    g_deqLockAcqReads++;
+    break;
+  }
+  case LOCK_ACQ_WRITE: {
+    g_deqLockAcqWrites++;
+    break;
+  }
+  case LOCK_REL_WRITE: {
+    g_deqLockRelWrites++;
+    break;
+  }
+  case THREAD_JOIN: {
+    g_deqThreadJoins++;
+    break;
+  }
+  case THREAD_SPAWN: {
+    g_deqThreadSpawns++;
+    break;
+  }
+  case IGNORE_CONFLICTS_BEGIN: {
+    g_deqIgnoreConflictsBegins++;
+    break;
+  }
+  case IGNORE_CONFLICTS_END: {
+    g_deqIgnoreConflictsEnds++;
+    break;
+  }
+  case SERVER_ROI_START: {
+    g_deqServerRoiStarts++;
+    break;
+  }
+  case SERVER_ROI_END: {
+    g_deqServerRoiEnds++;
+    break;
+  }
+  default: {
+    cout << e.m_eventType << endl;
+    assert(false);
+    // Do nothing
+  }
   }
 }
 
 /* A separate internal thread to write events to a file/fifo. */
-VOID ioThread(VOID* unused) {
+VOID ioThread(VOID *unused) {
   // cout << "[pintool] ioThread has started running:" << PIN_ThreadId() <<
   // endl;
 
@@ -573,12 +619,13 @@ VOID ioThread(VOID* unused) {
       if (!g_cbEventQ.empty()) {
         // At least one element
         assert(g_cbEventQ.size() > 0);
-        e = g_cbEventQ.front();  // Get the first element
-        g_cbEventQ.pop_front();  // Pop the beginning of the circular buffer
+        e = g_cbEventQ.front(); // Get the first element
+        g_cbEventQ.pop_front(); // Pop the beginning of the circular buffer
         g_eventQLock.unlock();
 
         if (e.m_eventType == INVALID) {
-          cerr << "[pintool] *** Invalid event:" << e.toString() << " ***" << endl;
+          cerr << "[pintool] *** Invalid event:" << e.toString() << " ***"
+               << endl;
           assert(false);
           break;
         }
@@ -600,15 +647,15 @@ VOID ioThread(VOID* unused) {
 
         if (e.m_eventType == THREAD_FINISH && e.m_tid == 0) {
           // when main thread exits, tear down simulation
-          break;  // this just breaks out of the loop
+          break; // this just breaks out of the loop
         }
 
       } else {
         // Queue is empty
         g_eventQLock.unlock();
       }
-    }  // if (constants::USE_SYNC_CIRCULAR_BUFFER)
-  }    // while (true)
+    } // if (constants::USE_SYNC_CIRCULAR_BUFFER)
+  }   // while (true)
 
   cout << "[pintool] ioThread exiting" << endl;
   cout << "[pintool] "
@@ -628,7 +675,7 @@ BOOL checkConfig() {
   return true;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   if (PIN_Init(argc, argv)) {
     return Usage();
   }

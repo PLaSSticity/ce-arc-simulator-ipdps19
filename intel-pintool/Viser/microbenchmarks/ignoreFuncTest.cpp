@@ -1,7 +1,6 @@
 #include<iostream>
 using namespace std;
 
-
 void pthread_mutex_unlock0(){
     cout << "unlock" << endl;
 }

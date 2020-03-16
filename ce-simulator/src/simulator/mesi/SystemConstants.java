@@ -19,11 +19,6 @@ class SystemConstants {
 	public static final int MEMORY_LATENCY = 120;
 	public static final int MEMORY_ACCESS = MEMORY_LATENCY / 2;
 
-	// Assumption is that the directory is embedded with the LLC
-	public static final int DIRECTORY_ACCESS = L3_ACCESS; // One way cost
-	// Roundtrip cost
-	public static final int DIRECTORY_LATENCY = L3_HIT_LATENCY;
-
 	// bytes, 48 bits for address + tags + core id
 	public static final int CONTROL_MESSAGE_SIZE_BYTES = 8;
 	// The return message needs core id and MSHR id. These would require log2
@@ -61,23 +56,23 @@ class SystemConstants {
 	public static void setLLCAccessTimes(int numCores) {
 		switch (numCores) {
 			case 4: {
-				L3_ACCESS = 25;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 25;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 8: {
-				L3_ACCESS = 35;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 35;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 16: {
-				L3_ACCESS = 40;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 40;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			case 32: {
-				L3_ACCESS = 50;
-				L3_HIT_LATENCY = L3_ACCESS / 2;
+				L3_HIT_LATENCY = 50;
+				L3_ACCESS = L3_HIT_LATENCY / 2;
 				break;
 			}
 			default: {

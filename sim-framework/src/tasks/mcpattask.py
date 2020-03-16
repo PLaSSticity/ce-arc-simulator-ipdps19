@@ -1,15 +1,15 @@
-import math
 import os
-import subprocess
+import math
+import time
+from shutil import copyfile
 import time
 import xml.etree.ElementTree as ET
-from shutil import copyfile
 
-from options import merge, util
-from options.constants import Constants
+from options import util, merge
 from result.result import Result
 from result.resultset import ResultSet
-from result.statskeys import PerCoreStatsKeys, SimKeys, ViserSimKeys
+from result.statskeys import SimKeys, ViserSimKeys, PerCoreStatsKeys
+from options.constants import Constants
 
 
 def _isParam(tag):
@@ -196,8 +196,8 @@ class McPATTask(Constants):
                             needsMetadata = True
 
                         # Copy the required input file template
-                        srcpath = (McPATTask.McPAT_TEMPLATES_DIR + os.sep + "arc-"
-                                   + str(num_cores) + ".xml")
+                        srcpath = (McPATTask.McPAT_TEMPLATES_DIR + os.sep + "arc" + os.sep +
+                                   "arc-" + str(num_cores) + ".xml")
                         if util.isCEConfigWithAIM(t):
                             srcpath = McPATTask.McPAT_TEMPLATES_DIR + os.sep + "ce-aim-" + str(
                                 num_cores) + ".xml"
@@ -624,8 +624,8 @@ class McPATTask(Constants):
                     cache_size = float(vals[0])
                     line_size = float(vals[1])
                     num_lines = cache_size / line_size
-                    new_line_size = (
-                        line_size + McPATTask.RD_MD_BYTES_PER_LINE + McPATTask.WR_MD_BYTES_PER_LINE)
+                    new_line_size = (line_size + McPATTask.RD_MD_BYTES_PER_LINE +
+                                     McPATTask.WR_MD_BYTES_PER_LINE)
                     if viserConfig:
                         new_line_size += McPATTask.ARC_VERSION_SIZE
                     new_cache_size = num_lines * new_line_size
@@ -862,8 +862,8 @@ class McPATTask(Constants):
                     reads = merge.merge(globalData, read_key)
                     aim_read_key = ViserSimKeys.AIM_READ_MISSES_KEY
                     aim_reads = merge.merge(globalData, aim_read_key)
-                    child.attrib["value"] = str(
-                        math.ceil(reads[read_key] + aim_reads[aim_read_key]))
+                    child.attrib["value"] = str(math.ceil(reads[read_key] +
+                                                          aim_reads[aim_read_key]))
                 elif key_name == McPATTask.MEM_WRITES:
                     assert child.attrib["value"] == McPATTask.INVALID_PLACEHOLDER
                     write_key = SimKeys.L3_WRITE_MISSES_KEY
@@ -887,8 +887,8 @@ class McPATTask(Constants):
                     cache_size = float(vals[0])
                     line_size = float(vals[1])
                     num_lines = cache_size / line_size
-                    new_line_size = (
-                        line_size + McPATTask.RD_MD_BYTES_PER_LINE + McPATTask.WR_MD_BYTES_PER_LINE)
+                    new_line_size = (line_size + McPATTask.RD_MD_BYTES_PER_LINE +
+                                     McPATTask.WR_MD_BYTES_PER_LINE)
                     if viserConfig:
                         new_line_size += McPATTask.ARC_VERSION_SIZE
                     new_cache_size = num_lines * new_line_size

@@ -393,14 +393,17 @@ public class Processor<Line extends MESILine> implements CacheCallbacks<Line> {
 					if (toEvict.dirty()) {
 						stats.pc_l2d.pc_DirtyLineEvictions.incr();
 					}
-					// We include this cost of eviction, since MESI directory protocol requires
-					// an ACK as a response to be sequentially consistent.
-					// M->I, M->I, or E->I, E->I, or S->I, S->I/S
-					stats.pc_ExecDrivenCycleCount.incr(SystemConstants.DIRECTORY_LATENCY);
-					stats.pc_MESICoherenceExecDrivenCycleCount
-							.incr(SystemConstants.DIRECTORY_LATENCY);
-					stats.pc_BandwidthDrivenCycleCount.incr(SystemConstants.DIRECTORY_LATENCY);
-
+					// Rui: As discussed (Nov 22, 2019), evictions are not on the critical path, so
+					// no run time costs should be charged.
+					/*
+					 * // We include this cost of eviction, since MESI directory protocol requires
+					 * // an ACK as a response to be sequentially consistent. // M->I, M->I, or
+					 * E->I, E->I, or S->I, S->I/S
+					 * stats.pc_ExecDrivenCycleCount.incr(SystemConstants.DIRECTORY_LATENCY);
+					 * stats.pc_MESICoherenceExecDrivenCycleCount
+					 * .incr(SystemConstants.DIRECTORY_LATENCY);
+					 * stats.pc_BandwidthDrivenCycleCount.incr(SystemConstants.DIRECTORY_LATENCY);
+					 */
 					// Round-trip between L2 cache and Directory (i.e., LLC)
 					switch (toEvict.getState()) {
 						case MESI_MODIFIED: { // Line is dirty
@@ -828,8 +831,7 @@ public class Processor<Line extends MESILine> implements CacheCallbacks<Line> {
 				// Remote core replies with the data to both the current core and to the
 				// directory -- data message.
 				// We have already accounted for one full LLC latency.
-				memoryCyclesElapsed(Math.max(SystemConstants.REMOTE_HIT_LATENCY,
-						SystemConstants.DIRECTORY_ACCESS), dmaResult, true);
+				memoryCyclesElapsed(SystemConstants.REMOTE_HIT_LATENCY, dmaResult, true);
 
 				// Need to account for one Fwd-GetS control message, one core-to-core Data
 				// message, and one

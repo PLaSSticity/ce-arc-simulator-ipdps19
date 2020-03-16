@@ -1,20 +1,20 @@
-import math
-import os.path
 import sys
 from enum import Enum
-from parser.backendsimulator import BackendSimulator
-from parser.mcpat import Mcpat
-from parser.pintool import Pintool
-
+import math
+import sys
 from options import merge, util
 from options.constants import Constants
-from result.resultset import ResultSet
-from result.statskeys import EnergyStatsKeys as EK
-from result.statskeys import MESISimKeys as MK
-from result.statskeys import SimKeys as SK
-from result.statskeys import ViserSimKeys as VK
-from tasks.mcpattask import McPATTask
+from parser.backendsimulator import BackendSimulator
+
+from options import util, merge
 from tasks.runtask import RunTask
+from tasks.mcpattask import McPATTask
+from result.resultset import ResultSet
+from result.statskeys import SimKeys as SK
+from result.statskeys import MESISimKeys as MK
+from result.statskeys import ViserSimKeys as VK
+from result.statskeys import EnergyStatsKeys as EK
+from parser.pintool import Pintool
 
 
 class SimulatorType(Enum):
@@ -125,8 +125,8 @@ class CollectTask(Constants):
         # Compute on-chip and off-chip network bandwidth.
         globalStats = di_stats[BackendSimulator.GLOBAL_CPUID_VAL]
         numSeconds = globalStats[SK.BANDWIDTH_CYCLE_COUNT_KEY] / CollectTask.CLK_FREQUENCY
-        numOnChipBytes = (
-            globalStats[SK.ONCHIP_NETWORKMSG_SIZE_16BYTES_FLITS_KEY] * CollectTask.NUM_BYTES_FLIT)
+        numOnChipBytes = (globalStats[SK.ONCHIP_NETWORKMSG_SIZE_16BYTES_FLITS_KEY] *
+                          CollectTask.NUM_BYTES_FLIT)
         onChipBW = numOnChipBytes / (numSeconds * math.pow(2, 30))
         globalStats[SK.SUM_REQD_ONCHIPBW_16BYTES_FLITS_KEY] = onChipBW
 
@@ -155,10 +155,10 @@ class CollectTask(Constants):
             global_data = exp[BackendSimulator.GLOBAL_CPUID_VAL]
 
             if util.isViserConfig(exp["tool"]):
-                llc_misses = (
-                    global_data[SK.L3_READ_MISSES_KEY] + global_data[SK.L3_WRITE_MISSES_KEY])
-                aim_misses = (
-                    global_data[VK.AIM_READ_MISSES_KEY] + global_data[VK.AIM_WRITE_MISSES_KEY])
+                llc_misses = (global_data[SK.L3_READ_MISSES_KEY] +
+                              global_data[SK.L3_WRITE_MISSES_KEY])
+                aim_misses = (global_data[VK.AIM_READ_MISSES_KEY] +
+                              global_data[VK.AIM_WRITE_MISSES_KEY])
                 llc_evictions = global_data[SK.L3_LINE_EVICTIONS_KEY]
                 llc_dirty_evictions = global_data[SK.L3_DIRTY_LINE_EVICTIONS_KEY]
                 aim_evictions = global_data[VK.AIM_LINE_EVICTIONS_KEY]
@@ -190,12 +190,12 @@ class CollectTask(Constants):
                     print("Mem accesses:", mem_reads + mem_writes)
                     print("Size of AIM line in 64 Bytes:", aim_64bytes_lines)
             elif util.isCEConfigWithAIM(exp["tool"]):
-                llc_misses = (
-                    global_data[SK.L3_READ_MISSES_KEY] + global_data[SK.L3_WRITE_MISSES_KEY])
+                llc_misses = (global_data[SK.L3_READ_MISSES_KEY] +
+                              global_data[SK.L3_WRITE_MISSES_KEY])
                 llc_evictions = global_data[SK.L3_LINE_EVICTIONS_KEY]
                 llc_dirty_evictions = global_data[SK.L3_DIRTY_LINE_EVICTIONS_KEY]
-                aim_misses = (
-                    global_data[VK.AIM_READ_MISSES_KEY] + global_data[VK.AIM_WRITE_MISSES_KEY])
+                aim_misses = (global_data[VK.AIM_READ_MISSES_KEY] +
+                              global_data[VK.AIM_WRITE_MISSES_KEY])
                 aim_evictions = global_data[VK.AIM_LINE_EVICTIONS_KEY]
                 aim_64bytes_lines = math.ceil(
                     util.getCEAIMLineSize(exp["tool"]) / Constants.DATA_LINE_SIZE)
@@ -215,8 +215,8 @@ class CollectTask(Constants):
                     print("Mem accesses:", mem_reads + mem_writes)
                     print("Size of AIM line in 64 Bytes:", aim_64bytes_lines)
             elif util.isCEConfigWithoutAIM(exp["tool"]):
-                llc_misses = (
-                    global_data[SK.L3_READ_MISSES_KEY] + global_data[SK.L3_WRITE_MISSES_KEY])
+                llc_misses = (global_data[SK.L3_READ_MISSES_KEY] +
+                              global_data[SK.L3_WRITE_MISSES_KEY])
                 llc_evictions = global_data[SK.L3_LINE_EVICTIONS_KEY]
                 llc_dirty_evictions = global_data[SK.L3_DIRTY_LINE_EVICTIONS_KEY]
                 l2_evictions = global_data[SK.L2_LINE_EVICTIONS_KEY]
@@ -246,8 +246,8 @@ class CollectTask(Constants):
                     print("Size of CE line in 64 Bytes:", ce_line_size)
                     print("Size of AIM line in 64 Bytes:", aim_64bytes_lines)
             elif util.isMESIConfig(exp["tool"]):
-                llc_misses = (
-                    global_data[SK.L3_READ_MISSES_KEY] + global_data[SK.L3_WRITE_MISSES_KEY])
+                llc_misses = (global_data[SK.L3_READ_MISSES_KEY] +
+                              global_data[SK.L3_WRITE_MISSES_KEY])
                 llc_dirty_evictions = global_data[SK.L3_DIRTY_LINE_EVICTIONS_KEY]
                 mem_reads = llc_misses
                 mem_writes = llc_dirty_evictions
@@ -262,8 +262,8 @@ class CollectTask(Constants):
             if util.isPintool(exp["tool"]):
                 continue
             global_data = exp[BackendSimulator.GLOBAL_CPUID_VAL]
-            numOffChipBytes = (
-                global_data[SK.MEM_64BYTES_ACCESSES_KEY] * CollectTask.NUM_BYTES_MEM_FLIT)
+            numOffChipBytes = (global_data[SK.MEM_64BYTES_ACCESSES_KEY] *
+                               CollectTask.NUM_BYTES_MEM_FLIT)
             numSeconds = (global_data[SK.BANDWIDTH_CYCLE_COUNT_KEY] / CollectTask.CLK_FREQUENCY)
             offChipBW = numOffChipBytes / (numSeconds * math.pow(2, 30))
             global_data[SK.SUM_REQD_OFFCHIPBW_64BYTES_FLITS_KEY] = offChipBW
@@ -298,8 +298,8 @@ class CollectTask(Constants):
                         pre = globalStats[VK.PRE_COMMIT_BW_CYCLE_COUNT_KEY]
                         globalStats[VK.READ_VALIDATION_BW_CYCLE_COUNT_KEY] = int(round(rv * frac))
                         rv = globalStats[VK.READ_VALIDATION_BW_CYCLE_COUNT_KEY]
-                        globalStats[VK.POST_COMMIT_BW_CYCLE_COUNT_KEY] = (
-                            newNumCycles - reg - pre - rv)
+                        globalStats[VK.POST_COMMIT_BW_CYCLE_COUNT_KEY] = (newNumCycles - reg - pre -
+                                                                          rv)
                     else:
                         coh = globalStats[MK.COHERENCE_EXEC_CYCLE_COUNT_KEY]
                         ex = globalStats[MK.MEM_EXEC_CYCLE_COUNT_KEY]
@@ -335,8 +335,8 @@ class CollectTask(Constants):
                         pre = globalStats[VK.PRE_COMMIT_BW_CYCLE_COUNT_KEY]
                         globalStats[VK.READ_VALIDATION_BW_CYCLE_COUNT_KEY] = int(round(rv * frac))
                         rv = globalStats[VK.READ_VALIDATION_BW_CYCLE_COUNT_KEY]
-                        globalStats[VK.POST_COMMIT_BW_CYCLE_COUNT_KEY] = (
-                            newNumCycles - reg - pre - rv)
+                        globalStats[VK.POST_COMMIT_BW_CYCLE_COUNT_KEY] = (newNumCycles - reg - pre -
+                                                                          rv)
                         post = globalStats[VK.POST_COMMIT_BW_CYCLE_COUNT_KEY]
                     else:
                         coh = globalStats[MK.COHERENCE_EXEC_CYCLE_COUNT_KEY]
@@ -409,16 +409,16 @@ class CollectTask(Constants):
                         else:
                             simDic = Mcpat.parseTerseStats(statsFile, simDic)
 
-                        simDic[EK.STATIC_ENERGY] = (
-                            simDic[EK.STATIC_POWER] * merged_cycles / CollectTask.CLK_FREQUENCY)
-                        simDic[EK.DYNAMIC_ENERGY] = (
-                            simDic[EK.DYNAMIC_POWER] * merged_cycles / CollectTask.CLK_FREQUENCY)
+                        simDic[EK.STATIC_ENERGY] = (simDic[EK.STATIC_POWER] * merged_cycles /
+                                                    CollectTask.CLK_FREQUENCY)
+                        simDic[EK.DYNAMIC_ENERGY] = (simDic[EK.DYNAMIC_POWER] * merged_cycles /
+                                                     CollectTask.CLK_FREQUENCY)
                         simDic[EK.BLOOM_FILTER_ENERGY] = merged_bf_energy
                         simDic[EK.AIM_STATIC_ENERGY] = static_aim_energy
                         simDic[EK.AIM_DYNAMIC_ENERGY] = dynamic_aim_energy
                         # McPAT output already includes the AIM component
-                        simDic[EK.TOTAL_ENERGY] = (
-                            simDic[EK.STATIC_ENERGY] + simDic[EK.DYNAMIC_ENERGY] + merged_bf_energy)
+                        simDic[EK.TOTAL_ENERGY] = (simDic[EK.STATIC_ENERGY] +
+                                                   simDic[EK.DYNAMIC_ENERGY] + merged_bf_energy)
 
                         # Union the two dictionaries
                         energyStats.append({**mergedDic, **simDic})

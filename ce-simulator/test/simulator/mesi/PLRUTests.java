@@ -1,6 +1,3 @@
-/**
- *
- */
 package simulator.mesi;
 
 import static org.junit.Assert.assertEquals;

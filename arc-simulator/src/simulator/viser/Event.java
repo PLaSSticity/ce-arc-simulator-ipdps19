@@ -23,13 +23,15 @@ public class Event {
 	}
 
 	boolean isLockAccess() {
-		return type == EventType.LOCK_ACQ_READ || type == EventType.LOCK_ACQ_WRITE || type == EventType.LOCK_REL_WRITE;
+		return type == EventType.LOCK_ACQ_READ || type == EventType.LOCK_ACQ_WRITE
+				|| type == EventType.LOCK_REL_WRITE;
 	}
 
 	@Override
 	public String toString() {
-		return "type=" + type + " semantics=" + semantics + " tid=" + tid + " addr=" + addr + " memOpSize=" + memOpSize + " stackRef=" + stackRef
- + " value=" + value + " inscount=" + insnCount + " siteIndex=" + siteIndex
-				+ " lastSiteIndex=" + lastSiteIndex;
+		return "type=" + type + " semantics=" + semantics + " tid=" + tid + " addr=" + addr
+				+ " memOpSize=" + memOpSize + " stackRef=" + stackRef + " value=" + value
+				+ " inscount=" + insnCount + " siteIndex=" + siteIndex + " lastSiteIndex="
+				+ lastSiteIndex;
 	}
 }

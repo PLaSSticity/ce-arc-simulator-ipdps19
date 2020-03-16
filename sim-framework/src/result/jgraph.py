@@ -1,14 +1,14 @@
-import math
 import os
+import math
 from subprocess import call
 
 import numpy
 import scipy.stats
 
 from options import merge
-from options.constants import Constants
 from options.merge import MergeType
 from result.resultset import ResultSet
+from options.constants import Constants
 
 
 class JGraph(Constants):
@@ -75,8 +75,8 @@ class JGraph(Constants):
         cwd = os.getcwd()
         os.chdir(self.outputPath)
 
-        str_cmdLine = (
-            "convert -density 300 " + self.key + ".eps" + " -resize 1024x1024 " + self.key + ".png")
+        str_cmdLine = ("convert -density 300 " + self.key + ".eps" + " -resize 1024x1024 " +
+                       self.key + ".png")
         call(str_cmdLine, shell=True)
 
         os.chdir(cwd)
@@ -201,8 +201,8 @@ class JGraph(Constants):
         f.write("\n")
 
     def _drawTextCommand(self, x_pos, y_pos, str_text):
-        return ("newstring vjc hjc x " + str(x_pos) + " y " + str(y_pos) + " fontsize " + str(
-            self.FONTSIZE) + " : " + str_text)
+        return ("newstring vjc hjc x " + str(x_pos) + " y " + str(y_pos) + " fontsize " +
+                str(self.FONTSIZE) + " : " + str_text)
 
     def __mean_confidence_interval(self, data, confidence=0.95):
         """Compute 95% confidence intervals."""

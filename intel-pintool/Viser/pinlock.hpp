@@ -10,20 +10,13 @@ class PinLock {
 
 public:
   // Method definitions
-  PinLock() {
-    PIN_InitLock(&_m_lock);
-  }
+  PinLock() { PIN_InitLock(&_m_lock); }
 
-  ~PinLock() {
-   }
+  ~PinLock() {}
 
-  inline void lock(int id=1) {
-    PIN_GetLock(&_m_lock, id);
-  }
+  inline void lock(int id = 1) { PIN_GetLock(&_m_lock, id); }
 
-  inline void unlock() {
-    PIN_ReleaseLock(&_m_lock);
-  }
+  inline void unlock() { PIN_ReleaseLock(&_m_lock); }
 };
 
 #endif // PIN_LOCK_HPP_
