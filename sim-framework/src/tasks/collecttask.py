@@ -1,20 +1,20 @@
+import math
+import os.path
 import sys
 from enum import Enum
-import math
-import sys
+from parser.backendsimulator import BackendSimulator
+from parser.mcpat import Mcpat
+from parser.pintool import Pintool
+
 from options import merge, util
 from options.constants import Constants
-from parser.backendsimulator import BackendSimulator
-
-from options import util, merge
-from tasks.runtask import RunTask
-from tasks.mcpattask import McPATTask
 from result.resultset import ResultSet
-from result.statskeys import SimKeys as SK
-from result.statskeys import MESISimKeys as MK
-from result.statskeys import ViserSimKeys as VK
 from result.statskeys import EnergyStatsKeys as EK
-from parser.pintool import Pintool
+from result.statskeys import MESISimKeys as MK
+from result.statskeys import SimKeys as SK
+from result.statskeys import ViserSimKeys as VK
+from tasks.mcpattask import McPATTask
+from tasks.runtask import RunTask
 
 
 class SimulatorType(Enum):

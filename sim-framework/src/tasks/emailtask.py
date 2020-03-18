@@ -1,7 +1,7 @@
 import ast
+import smtplib
 import socket
 from email.header import Header
-import socket
 
 from options import util
 from options.constants import Constants

@@ -1,9 +1,9 @@
-import ast
 import argparse
+import ast
 
 from options import util
-from options.projects import Project
 from options.benchmarks import Benchmark
+from options.projects import Project
 
 
 class CmdLine:

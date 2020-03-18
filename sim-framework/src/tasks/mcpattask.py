@@ -1,15 +1,15 @@
-import os
 import math
-import time
-from shutil import copyfile
+import os
+import subprocess
 import time
 import xml.etree.ElementTree as ET
+from shutil import copyfile
 
-from options import util, merge
+from options import merge, util
+from options.constants import Constants
 from result.result import Result
 from result.resultset import ResultSet
-from result.statskeys import SimKeys, ViserSimKeys, PerCoreStatsKeys
-from options.constants import Constants
+from result.statskeys import PerCoreStatsKeys, SimKeys, ViserSimKeys
 
 
 def _isParam(tag):

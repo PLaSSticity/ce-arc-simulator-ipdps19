@@ -1,13 +1,13 @@
 import os
-import time
 import subprocess
+import time
 
 from options import util
 from options.benchmarks import Benchmark
-from tasks.synctask import SyncTask
+from options.conflicts import Conflicts
 from options.constants import Constants
 import tasks.sniper
-from options.benchmarks import Benchmark
+from tasks.synctask import SyncTask
 
 
 class RunTask(Constants):

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="build" name="visersim">
 	<property environment="env" />
 	<property name="ECLIPSE_HOME" value="../../../../usr/lib/eclipse" />

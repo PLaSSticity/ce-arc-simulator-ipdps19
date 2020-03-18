@@ -1,6 +1,7 @@
+from parser.backendsimulator import BackendSimulator
+
 from options import util
 from options.constants import Constants
-from parser.backendsimulator import BackendSimulator
 
 
 class ResultSet:

@@ -1,15 +1,15 @@
-import os
-import copy
-import math
-import itertools
 import collections
+import copy
+import itertools
+import math
+import os
 
-from options import util, merge
+from options import merge, util
+from options.constants import Constants
 from options.merge import MergeType
 from result.jgraph import JGraph
 from result.resultset import ResultSet
 from result.statskeys import StackedKeys
-from options.constants import Constants
 
 
 class StackedBarGraph(JGraph, Constants):
@@ -232,8 +232,8 @@ class StackedBarGraph(JGraph, Constants):
     def __drawWhiteXBar(self, fl_width, f):
         str_shade = "1.0 1.0 1.0"
         str_write = ("newcurve marktype xbar cfill " + str_shade)
-        str_write += (" marksize " + str(round(fl_width, self.PRECISION_DIGITS)) +
-                      " linethickness 0")
+        str_write += (
+            " marksize " + str(round(fl_width, self.PRECISION_DIGITS)) + " linethickness 0")
         f.write(str_write + "\n")
 
     def __computeProps(self, di_compProps, str_compKey, li_toolRawData, li_toolNormData, str_bench,
@@ -265,14 +265,14 @@ class StackedBarGraph(JGraph, Constants):
 
     def __startXBar(self, fl_shade, fl_width, f, b_print, i, str_compKey):
         str_shade = str(round(fl_shade, self.PRECISION_DIGITS))
-        str_write = ("newcurve marktype xbar cfill " + str_shade + " " + str_shade + " " +
-                     str_shade)
+        str_write = (
+            "newcurve marktype xbar cfill " + str_shade + " " + str_shade + " " + str_shade)
         if i % 2 == 0:
             str_write += " pattern solid "
         else:
             str_write += " pattern estripe " + str(45 * i)
-        str_write += (" marksize " + str(round(fl_width, self.PRECISION_DIGITS)) +
-                      " linethickness 0")
+        str_write += (
+            " marksize " + str(round(fl_width, self.PRECISION_DIGITS)) + " linethickness 0")
         if b_print:
             str_write += (" label : " + str_compKey)
 
@@ -374,10 +374,10 @@ class StackedBarGraph(JGraph, Constants):
 
     def __startSummaryBar(self, file, fl_shade, fl_barWidth, str_tool):
         str_shade = str(round(fl_shade, self.PRECISION_DIGITS))
-        str_write = ("newcurve marktype xbar cfill " + str_shade + " " + str_shade + " " +
-                     str_shade + " pattern solid ")
-        str_write += (" marksize " + str(round(fl_barWidth, self.PRECISION_DIGITS)) +
-                      " linethickness 0")
+        str_write = ("newcurve marktype xbar cfill " + str_shade + " " + str_shade + " " + str_shade
+                     + " pattern solid ")
+        str_write += (
+            " marksize " + str(round(fl_barWidth, self.PRECISION_DIGITS)) + " linethickness 0")
         str_write += (" label : " + str_tool)
         file.write(str_write + "\n")
 

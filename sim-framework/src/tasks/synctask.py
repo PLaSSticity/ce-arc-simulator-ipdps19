@@ -39,9 +39,9 @@ class SyncTask(Constants):
 
     @staticmethod
     def __syncPintool(options, str_sourceMachine, str_user):
-        str_cmd = (
-            "rsync -az --exclude=.svn " + str_user + "@" + str_sourceMachine + ":" +
-            SyncTask.PIN_ROOT + SyncTask.FILE_SEP + " " + SyncTask.PIN_ROOT + SyncTask.FILE_SEP)
+        str_cmd = ("rsync -az --exclude=.svn " + str_user + "@" + str_sourceMachine + ":" +
+                   SyncTask.PIN_ROOT + SyncTask.FILE_SEP + " " + SyncTask.PIN_ROOT +
+                   SyncTask.FILE_SEP)
         if options.verbose >= 1:
             print(SyncTask.__outputPrefix() + "Syncing Pintool...")
         if options.printOnly:

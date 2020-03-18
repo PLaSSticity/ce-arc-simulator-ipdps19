@@ -12,5 +12,11 @@
     ],
     "python.formatting.provider": "yapf",
     "python.linting.enabled": true,
-    "python.linting.pylintEnabled": true
+    "python.linting.pylintEnabled": true,
+    "python.sortImports.args": [
+        "-ac",
+        "-j 2",
+        "--settings-path",
+        "${workspaceFolder}/setup.cfg"
+    ]
 }
