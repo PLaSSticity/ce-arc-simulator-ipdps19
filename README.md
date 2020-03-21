@@ -9,10 +9,10 @@ Please refer to the paper for more details. In the following, we give a brief de
 ## Update
 
 + 18th Mar 2020 - We have fixed the following bugs.
-  1) Fixed the one-way and round-trip latency values for the LLC in ARC and MESI/CE
+  1) Fixed the one-way and round-trip latency values for the LLC in ARC and MESI/CE,
   2) Removed the Directory one-way and round-trip latency in favor of the "remote hit" latency.
 
-  These changes do not appear to affect the final results in significant ways.
+  We reran performance experiments reported in the IPDPS'19 paper, and found that the results were negligibly different from the published results and does not affect the conclusions in the published paper.
 
 ## Setup the Environment
 
